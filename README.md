@@ -106,5 +106,6 @@ pnpm vitest
 |---|---|---|---|
 | ADR-001: Tech Stack | [`docs/decisions/ADR-001-tech-stack.md`](docs/decisions/ADR-001-tech-stack.md) | Delivery | Framework, animation, CSS, and tooling decisions |
 | OpA | [`docs/discovery/OpA.md`](docs/discovery/OpA.md) | Discovery | Opportunity assessment — problem, personas, risk scores, and success criteria |
+| PR-FAQ | [`docs/discovery/PR-FAQ.md`](docs/discovery/PR-FAQ.md) | Discovery | Working backwards press release + customer and internal FAQs |
 
 More documents will be added as Discovery and Delivery phases progress.
