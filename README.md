@@ -102,8 +102,9 @@ pnpm vitest
 
 ## Documentation
 
-| Document | Location | Description |
-|---|---|---|
-| ADR-001: Tech Stack | [`docs/decisions/ADR-001-tech-stack.md`](docs/decisions/ADR-001-tech-stack.md) | Framework, animation, CSS, and tooling decisions |
+| Document | Location | Phase | Description |
+|---|---|---|---|
+| ADR-001: Tech Stack | [`docs/decisions/ADR-001-tech-stack.md`](docs/decisions/ADR-001-tech-stack.md) | Delivery | Framework, animation, CSS, and tooling decisions |
+| OpA | [`docs/discovery/OpA.md`](docs/discovery/OpA.md) | Discovery | Opportunity assessment — problem, personas, risk scores, and success criteria |
 
 More documents will be added as Discovery and Delivery phases progress.
