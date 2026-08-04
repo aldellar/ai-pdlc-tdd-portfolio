@@ -3,50 +3,76 @@
 /**
  * MagneticBackground
  *
- * Full-screen canvas of large soft gradient orbs that drift toward the
- * cursor. The Apple AI colour palette: deep purple, vivid pink/magenta,
- * electric blue, cyan/teal — all semi-transparent so the photo strip
- * underneath remains visible.
- *
- * Implementation:
- *  - Each orb has a natural position and a target position (cursor).
- *  - On mousemove the target shifts; each orb lerps toward it at its own
- *    speed, creating a staggered magnetic pull.
- *  - On no mouse activity (touch / reduced motion) the orbs drift slowly
- *    using a sine-wave path so the background is never static.
- *  - Respects prefers-reduced-motion — disables cursor tracking and slows
- *    drift to a near-stop.
+ * Full-screen canvas of oversized soft gradient orbs that:
+ *  1. Always drift autonomously on slow independent sine paths (always moving)
+ *  2. Pull toward the cursor when active (magnetic effect adds on top of drift)
+ *  3. Are large enough that the gradient never fully fades to black at the
+ *     viewport edge — centre opacity is high, mid-stop is dense, edge stop
+ *     is pushed to 1.2× the viewport so black is never visible
  */
 
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
 interface Orb {
-  x: number;        // current x (0–1 of viewport)
-  y: number;        // current y (0–1 of viewport)
-  tx: number;       // target x
-  ty: number;       // target y
-  baseX: number;    // resting x
-  baseY: number;    // resting y
-  size: number;     // radius as fraction of viewport min-dimension
-  speed: number;    // lerp factor toward cursor (0–1)
-  drift: number;    // phase offset for idle sine drift
-  color: string;    // CSS rgba colour
+  x: number;
+  y: number;
+  tx: number;
+  ty: number;
+  baseX: number;
+  baseY: number;
+  /** Radius as multiple of the viewport's larger dimension — >1 means off-edge */
+  size: number;
+  speed: number;
+  /** Independent phase offset so each orb drifts on a unique path */
+  driftPhase: number;
+  /** Drift amplitude — how far the orb wanders from its base position (0–1) */
+  driftAmp: number;
+  /** Drift speed multiplier */
+  driftSpeed: number;
+  color: string;
 }
 
 const ORBS: Orb[] = [
-  { x: 0.2,  y: 0.3,  tx: 0.2,  ty: 0.3,  baseX: 0.2,  baseY: 0.3,  size: 0.55, speed: 0.028, drift: 0,    color: 'rgba(139, 92, 246, 0.55)'  }, // purple
-  { x: 0.75, y: 0.2,  tx: 0.75, ty: 0.2,  baseX: 0.75, baseY: 0.2,  size: 0.5,  speed: 0.018, drift: 1.2,  color: 'rgba(236, 72, 153, 0.50)'  }, // pink
-  { x: 0.5,  y: 0.65, tx: 0.5,  ty: 0.65, baseX: 0.5,  baseY: 0.65, size: 0.6,  speed: 0.012, drift: 2.5,  color: 'rgba(59, 130, 246, 0.50)'  }, // blue
-  { x: 0.85, y: 0.7,  tx: 0.85, ty: 0.7,  baseX: 0.85, baseY: 0.7,  size: 0.42, speed: 0.022, drift: 0.7,  color: 'rgba(20, 184, 166, 0.45)'  }, // teal
-  { x: 0.1,  y: 0.75, tx: 0.1,  ty: 0.75, baseX: 0.1,  baseY: 0.75, size: 0.38, speed: 0.032, drift: 1.9,  color: 'rgba(167, 139, 250, 0.40)' }, // lavender
+  // red — left edge, upper third
+  { x: 0.05, y: 0.30, tx: 0.05, ty: 0.30, baseX: 0.05, baseY: 0.30,
+    size: 0.72, speed: 0.018, driftPhase: 0,    driftAmp: 0.08, driftSpeed: 0.60,
+    color: 'rgba(239, 68, 68, 0.90)' },
+  // orange — top-left quadrant
+  { x: 0.28, y: 0.15, tx: 0.28, ty: 0.15, baseX: 0.28, baseY: 0.15,
+    size: 0.70, speed: 0.022, driftPhase: 0.7,  driftAmp: 0.08, driftSpeed: 0.55,
+    color: 'rgba(249, 115, 22, 0.90)' },
+  // yellow — top-right quadrant
+  { x: 0.68, y: 0.15, tx: 0.68, ty: 0.15, baseX: 0.68, baseY: 0.15,
+    size: 0.70, speed: 0.020, driftPhase: 1.4,  driftAmp: 0.08, driftSpeed: 0.50,
+    color: 'rgba(234, 179, 8, 0.90)' },
+  // green — right edge, upper third
+  { x: 0.95, y: 0.32, tx: 0.95, ty: 0.32, baseX: 0.95, baseY: 0.32,
+    size: 0.70, speed: 0.016, driftPhase: 2.1,  driftAmp: 0.07, driftSpeed: 0.45,
+    color: 'rgba(34, 197, 94, 0.90)' },
+  // blue — right edge, lower third
+  { x: 0.92, y: 0.68, tx: 0.92, ty: 0.68, baseX: 0.92, baseY: 0.68,
+    size: 0.72, speed: 0.014, driftPhase: 2.8,  driftAmp: 0.07, driftSpeed: 0.40,
+    color: 'rgba(59, 130, 246, 0.90)' },
+  // indigo — bottom-right quadrant
+  { x: 0.68, y: 0.84, tx: 0.68, ty: 0.84, baseX: 0.68, baseY: 0.84,
+    size: 0.70, speed: 0.018, driftPhase: 1.0,  driftAmp: 0.08, driftSpeed: 0.58,
+    color: 'rgba(99, 102, 241, 0.90)' },
+  // violet — bottom-left quadrant
+  { x: 0.28, y: 0.84, tx: 0.28, ty: 0.84, baseX: 0.28, baseY: 0.84,
+    size: 0.70, speed: 0.020, driftPhase: 3.5,  driftAmp: 0.08, driftSpeed: 0.55,
+    color: 'rgba(139, 92, 246, 0.90)' },
+  // pink — left edge, lower third
+  { x: 0.05, y: 0.68, tx: 0.05, ty: 0.68, baseX: 0.05, baseY: 0.68,
+    size: 0.70, speed: 0.022, driftPhase: 0.4,  driftAmp: 0.08, driftSpeed: 0.62,
+    color: 'rgba(236, 72, 153, 0.90)' },
 ];
 
 export function MagneticBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const mouseRef  = useRef({ x: 0.5, y: 0.5, active: false });
-  const rafRef    = useRef<number>(0);
-  const orbsRef   = useRef<Orb[]>(ORBS.map(o => ({ ...o })));
+  const canvasRef      = useRef<HTMLCanvasElement>(null);
+  const mouseRef       = useRef({ x: 0.5, y: 0.5, active: false });
+  const rafRef         = useRef<number>(0);
+  const orbsRef        = useRef<Orb[]>(ORBS.map(o => ({ ...o })));
   const prefersReduced = useReducedMotion();
 
   useEffect(() => {
@@ -55,7 +81,6 @@ export function MagneticBackground() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Size canvas to viewport
     function resize() {
       if (!canvas) return;
       canvas.width  = window.innerWidth;
@@ -64,7 +89,6 @@ export function MagneticBackground() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Track mouse — normalised 0–1
     function onMouseMove(e: MouseEvent) {
       if (prefersReduced) return;
       mouseRef.current = {
@@ -79,45 +103,52 @@ export function MagneticBackground() {
 
     function draw() {
       if (!canvas || !ctx) return;
-      const W = canvas.width;
-      const H = canvas.height;
-      const dim = Math.min(W, H);
+      const W   = canvas.width;
+      const H   = canvas.height;
+      // Use the LARGER dimension so orbs always overshoot the viewport
+      const dim = Math.max(W, H);
 
-      // Clear with near-black (not pure black — lets gradient show richer)
       ctx.clearRect(0, 0, W, H);
       ctx.fillStyle = '#060612';
       ctx.fillRect(0, 0, W, H);
 
-      t += prefersReduced ? 0.001 : 0.004;
+      // Advance time — always ticks, giving autonomous movement
+      t += prefersReduced ? 0.0005 : 0.003;
 
       const orbs = orbsRef.current;
 
       orbs.forEach((orb) => {
-        // Idle sine drift when no mouse or reduced motion
-        const driftX = Math.sin(t + orb.drift) * 0.06;
-        const driftY = Math.cos(t * 0.7 + orb.drift) * 0.05;
+        // Each orb drifts on its own unique lissajous-like path
+        const driftX = Math.sin(t * orb.driftSpeed + orb.driftPhase) * orb.driftAmp;
+        const driftY = Math.cos(t * orb.driftSpeed * 0.73 + orb.driftPhase + 1.1) * orb.driftAmp;
 
         if (mouseRef.current.active && !prefersReduced) {
-          // Magnetic pull: target moves toward cursor weighted by speed
-          orb.tx = orb.baseX + (mouseRef.current.x - orb.baseX) * 0.45 + driftX;
-          orb.ty = orb.baseY + (mouseRef.current.y - orb.baseY) * 0.35 + driftY;
+          // Magnetic pull blends with autonomous drift
+          orb.tx = orb.baseX
+            + (mouseRef.current.x - orb.baseX) * 0.35
+            + driftX;
+          orb.ty = orb.baseY
+            + (mouseRef.current.y - orb.baseY) * 0.28
+            + driftY;
         } else {
           orb.tx = orb.baseX + driftX;
           orb.ty = orb.baseY + driftY;
         }
 
-        // Lerp current toward target
+        // Lerp toward target
         orb.x += (orb.tx - orb.x) * orb.speed;
         orb.y += (orb.ty - orb.y) * orb.speed;
 
-        // Draw radial gradient orb
         const cx = orb.x * W;
         const cy = orb.y * H;
         const r  = orb.size * dim;
 
+        // Three-stop gradient: full colour at centre → dense mid → transparent edge
+        // The edge stop is at exactly r (≥ viewport diagonal) so black never shows
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
         grad.addColorStop(0,    orb.color);
-        grad.addColorStop(0.5,  orb.color.replace(/[\d.]+\)$/, '0.25)'));
+        grad.addColorStop(0.30, orb.color.replace(/[\d.]+\)$/, '0.60)'));
+        grad.addColorStop(0.60, orb.color.replace(/[\d.]+\)$/, '0.20)'));
         grad.addColorStop(1,    orb.color.replace(/[\d.]+\)$/, '0)'));
 
         ctx.beginPath();

@@ -23,6 +23,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 export interface LoadingScreenProps {
   onExitComplete?: () => void;
+  /** Called the instant the panels begin separating (before animation finishes). */
+  onSeparate?: () => void;
 }
 
 // Hold duration — vertical line draws during this window
@@ -36,11 +38,14 @@ function getReducedMotion(): boolean {
 // Shared exit transition for both panels
 const PANEL_TRANSITION = { duration: 0.55, ease: [0.76, 0, 0.24, 1] };
 
-export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
+export function LoadingScreen({ onExitComplete, onSeparate }: LoadingScreenProps) {
   const [visible, setVisible]     = useState(true);
   const [hidden,  setHidden]      = useState(false);
   const hasExited                  = useRef(false);
   const panelsDone                 = useRef(0);       // counts panels that finished exiting
+  // Stable ref so the useEffect dependency array stays clean
+  const onSeparateRef = useRef(onSeparate);
+  useEffect(() => { onSeparateRef.current = onSeparate; });
   // Compute once on mount so both the useEffect and render agree
   const [isReducedMotion]          = useState(() => getReducedMotion());
 
@@ -50,6 +55,7 @@ export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
     const timer = setTimeout(() => {
       if (hasExited.current) return;
       setVisible(false);
+      onSeparateRef.current?.();
     }, delay);
     return () => clearTimeout(timer);
   }, [isReducedMotion]);
