@@ -2,7 +2,7 @@
 
 **Sprint:** Sprint 1  
 **Priority:** P0 — Blocker. Nothing else can be built until this is done.  
-**Status:** `[ ] in progress`
+**Status:** `[x] complete (pending Vercel connection)`
 
 ---
 
