@@ -104,6 +104,17 @@ export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
       aria-hidden={hidden ? 'true' : undefined}
       style={hidden ? { display: 'none' } : undefined}
     >
+      {/* Single centred line — fixed at 50vh, grows from centre outward */}
+      {visible && (
+        <motion.div
+          key="centre-line"
+          className="fixed inset-x-0 z-[51] h-px bg-white"
+          style={{ top: '50vh', scaleX: 0, transformOrigin: 'center' }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 0.85, ease: 'easeInOut' }}
+        />
+      )}
+
       {/* TOP panel — slides upward on exit */}
       <AnimatePresence onExitComplete={handlePanelDone}>
         {visible && (
@@ -113,15 +124,7 @@ export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
             style={{ height: '50vh' }}
             exit={{ y: '-100%' }}
             transition={PANEL_TRANSITION}
-          >
-            {/* Vertical line — top half, grows downward from centre */}
-            <motion.div
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px bg-white origin-bottom"
-              style={{ height: 0 }}
-              animate={{ height: '40vh' }}
-              transition={{ duration: 0.85, ease: 'easeInOut' }}
-            />
-          </motion.div>
+          />
         )}
       </AnimatePresence>
 
@@ -134,15 +137,7 @@ export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
             style={{ height: '50vh' }}
             exit={{ y: '100%' }}
             transition={PANEL_TRANSITION}
-          >
-            {/* Vertical line — bottom half, grows upward from centre */}
-            <motion.div
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-px bg-white origin-top"
-              style={{ height: 0 }}
-              animate={{ height: '40vh' }}
-              transition={{ duration: 0.85, ease: 'easeInOut' }}
-            />
-          </motion.div>
+          />
         )}
       </AnimatePresence>
     </div>
