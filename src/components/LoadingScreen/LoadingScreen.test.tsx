@@ -8,7 +8,7 @@
  * the exit logic, focus management, and reduced-motion behaviour.
  */
 
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { LoadingScreen } from './LoadingScreen';
 
@@ -69,7 +69,7 @@ describe('S4 — AC3: exit behaviour', () => {
 describe('S4 — AC4: focus management after exit', () => {
   it('does not leave focus trapped inside the loading screen after exit', async () => {
     // Render loading screen alongside a main content landmark
-    const { getByRole } = render(
+    render(
       <>
         <LoadingScreen onExitComplete={() => {}} />
         <main data-testid="main-content" tabIndex={-1}>

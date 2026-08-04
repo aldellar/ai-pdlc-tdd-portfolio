@@ -26,15 +26,13 @@ export function ScrambleText({ text, className }: ScrambleTextProps) {
   useEffect(() => {
     if (!text) return;
 
-    // Respect prefers-reduced-motion — skip scramble entirely
+    // Respect prefers-reduced-motion — skip scramble entirely.
+    // No setState needed: display is already initialised to `text`.
     const prefersReduced =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (prefersReduced) {
-      setDisplay(text);
-      return;
-    }
+    if (prefersReduced) return;
 
     let frame = 0;
     const totalFrames = text.length * CYCLES_PER_CHAR;
