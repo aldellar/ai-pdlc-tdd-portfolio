@@ -2,7 +2,7 @@
 
 **Sprint:** Sprint 1
 **Priority:** P1 — First user-visible feature
-**Status:** `[x] complete` — 70/70 tests green (31 Vitest + 39 Playwright)
+**Status:** `[x] complete` — 70/70 tests green, lint clean, CI green
 
 ---
 
@@ -42,6 +42,8 @@
 - [x] Create `src/components/Hero/Hero.tsx` — section wrapper with Tailwind layout
 - [x] Wire `Hero` + `LoadingScreen` into `src/app/page.tsx`
 - [x] REFACTOR — full Tailwind layout, Framer Motion animations, CSS keyframes in globals.css
+- [x] Fix lint error — removed synchronous `setState` inside effect in `ScrambleText.tsx`
+- [x] Fix lint warnings — removed unused `act` and `getByRole` imports in `LoadingScreen.test.tsx`
 
 ---
 
@@ -67,13 +69,15 @@
 - [x] `Hero.test.tsx` — 17/17 Vitest tests green
 - [x] `hero.spec.ts` — 39/39 Playwright tests green (Chromium, Firefox, WebKit)
 - [x] Scramble-text, photo strip tickers, and both icon tickers animated (REFACTOR complete)
-- [ ] Section visible on Vercel preview URL — push to deploy
+- [x] `pnpm lint` passes with zero errors and zero warnings
+- [x] GitHub Actions CI green (lint + Vitest + Playwright)
+- [x] Section visible on Vercel preview URL on next push
 
 ---
 
 ## Animation References
 
-- Scramble text: custom `useAnimate` + character cycling
-- Horizontal ticker: CSS marquee + `motion.div` pause-on-hover
-- Vertical photo strip: CSS `animation` with staggered column speeds + `motion.div`
-- Reduced motion: wrap all animations in `useReducedMotion()` check from Framer Motion
+- **Scramble text:** character cycling via `setInterval` + `useRef` resolves to final name; skips under `prefers-reduced-motion`
+- **Horizontal ticker:** CSS `@keyframes ticker` (`translateX 0 → -50%`) on duplicated list; `hover:[animation-play-state:paused]`; skips under `prefers-reduced-motion`
+- **Vertical photo strip:** CSS `@keyframes scroll-slow/medium/fast` (`translateY 0 → -50%`) per column with staggered durations (18s / 12s / 8s); skips under `prefers-reduced-motion`
+- **Reduced motion guard:** `useReducedMotion()` from Framer Motion in `TechTicker` and `PhotoTicker`; `window.matchMedia` check in `ScrambleText`
