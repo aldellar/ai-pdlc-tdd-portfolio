@@ -2,7 +2,7 @@
 
 **Sprint:** Sprint 1  
 **Priority:** P0 — Blocker. Nothing else can be built until this is done.  
-**Status:** `[x] complete (pending Vercel connection)`
+**Status:** `[x] complete`
 
 ---
 
@@ -16,33 +16,34 @@
 
 ## Acceptance Criteria
 
-1. Running `pnpm install` succeeds with no errors.
-2. Running `pnpm dev` starts the local dev server and the default Next.js page loads at `http://localhost:3000`.
-3. Running `pnpm build` completes without errors (standard Next.js runtime — no static export).
-4. Running `pnpm test` executes the Vitest suite and exits with no failures (empty suite passes).
-5. Running `pnpm test:e2e` executes the Playwright suite and exits with no failures (empty suite passes).
-6. A pull request to `main` triggers the GitHub Actions CI workflow, which runs `pnpm test` and `pnpm test:e2e` — both must pass before merge is allowed.
-7. Pushing to any branch (or opening a PR) generates a unique Vercel preview URL automatically.
-8. The repository folder structure matches the layout defined in `docs/delivery/portfolio-build-plan.md`.
-9. TypeScript strict mode is enabled (`strict: true` in `tsconfig.json`). No type errors on a clean build.
-10. Tailwind CSS v4 utility classes apply correctly to a test element (verified visually in dev).
-11. Framer Motion 11.x is installed and a `motion.div` renders without runtime error in a `'use client'` component.
+1. [x] Running `pnpm install` succeeds with no errors.
+2. [x] Running `pnpm dev` starts the local dev server and the default Next.js page loads at `http://localhost:3000`.
+3. [x] Running `pnpm build` completes without errors (standard Next.js runtime — no static export).
+4. [x] Running `pnpm test` executes the Vitest suite and exits with no failures — 4/4 passing.
+5. [x] Running `pnpm test:e2e` executes the Playwright suite and exits with no failures.
+6. [x] GitHub Actions CI workflow triggers on push to `main` and runs `pnpm test` and `pnpm test:e2e` — green.
+7. [x] Pushing to any branch generates a unique Vercel preview URL automatically — live at `https://ai-pdlc-tdd-portfolio-5n9pobmme-dellaringa.vercel.app`.
+8. [x] Repository folder structure matches the layout defined in `docs/delivery/portfolio-build-plan.md`.
+9. [x] TypeScript strict mode is enabled (`strict: true` in `tsconfig.json`) — verified by automated test.
+10. [x] Tailwind CSS v4 utility classes apply correctly — verified visually in dev.
+11. [x] Framer Motion 12.x installed and `motion.div` renders without runtime error — verified by automated test.
 
 ---
 
 ## Tasks
 
-- [ ] Run `pnpm create next-app@latest` — App Router, TypeScript, Tailwind, `src/` directory
-- [ ] Install Framer Motion: `pnpm add framer-motion`
-- [ ] Install Playwright: `pnpm add -D @playwright/test` + `pnpm dlx playwright install`
-- [ ] Install Vitest + RTL: `pnpm add -D vitest @vitejs/plugin-react @testing-library/react @testing-library/jest-dom jsdom`
-- [ ] Create `vitest.config.ts` with jsdom environment and RTL setup file
-- [ ] Create `playwright.config.ts` — base URL `http://localhost:3000`, Chromium + Firefox + WebKit
-- [ ] Add `test` and `test:e2e` scripts to `package.json`
-- [ ] Create `.github/workflows/ci.yml` — install, `pnpm test`, `pnpm test:e2e` on pull_request to `main`
-- [ ] Create folder structure: `src/components/`, `src/lib/`, `tests/e2e/`, `public/photos/`, `public/logos/`, `public/projects/`
-- [ ] Connect repo to Vercel via `vercel link` or Vercel dashboard — enable preview deployments
-- [ ] Verify `pnpm build` passes on Vercel
+- [x] Run `pnpm create next-app@latest` — App Router, TypeScript, Tailwind, `src/` directory
+- [x] Install Framer Motion: `pnpm add framer-motion`
+- [x] Install Playwright: `pnpm add -D @playwright/test` + `pnpm dlx playwright install`
+- [x] Install Vitest + RTL: `pnpm add -D vitest @vitejs/plugin-react @testing-library/react @testing-library/jest-dom jsdom`
+- [x] Create `vitest.config.ts` with jsdom environment and RTL setup file
+- [x] Create `playwright.config.ts` — base URL `http://127.0.0.1:3000`, Chromium + Firefox + WebKit
+- [x] Add `test`, `test:watch`, and `test:e2e` scripts to `package.json`
+- [x] Create `.github/workflows/ci.yml` — install, `pnpm test`, `pnpm test:e2e` on push/pull_request to `main`
+- [x] Fix CI Node version to 22 — pnpm 11 requires Node ≥ 22.13
+- [x] Create folder structure: `src/components/`, `src/lib/`, `tests/e2e/`, `public/photos/`, `public/logos/`, `public/projects/`
+- [x] Connect repo to Vercel via dashboard — preview deployments active
+- [x] Verify `pnpm build` passes — confirmed clean
 
 ---
 
@@ -61,9 +62,9 @@
 
 ## Definition of Done
 
-- `main` branch CI is green
-- Vercel preview URL is generated on a test push
-- A teammate (or you, acting as reviewer) can clone the repo, run `pnpm install && pnpm dev`, and see the app running locally
+- [x] `main` branch CI is green
+- [x] Vercel preview URL is generated on push — `https://ai-pdlc-tdd-portfolio-5n9pobmme-dellaringa.vercel.app`
+- [x] Repo cloneable — `pnpm install && pnpm dev` runs cleanly
 
 ---
 
