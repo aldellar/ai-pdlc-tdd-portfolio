@@ -48,7 +48,12 @@
 
 ## Test Coverage
 
-- **Vitest:** No unit tests for scaffolding itself — verified by `pnpm build` passing clean
+- **Vitest (`src/lib/tsconfig.test.ts`)** — AC9:
+  - Assert `tsconfig.json` exists at the project root
+  - Assert `compilerOptions.strict` is `true`
+- **Vitest (`src/components/MotionSmokeTest/MotionSmokeTest.test.tsx`)** — AC11:
+  - Assert `motion.div` renders without throwing a runtime error
+  - Assert the rendered element is present in the DOM
 - **Playwright:** No E2E tests yet — verified by `pnpm test:e2e` exiting cleanly on an empty suite
 - **CI:** GitHub Actions workflow run must be green on the setup PR
 
