@@ -2,7 +2,7 @@
 
 **Sprint:** Sprint 1  
 **Priority:** P1 — Ships with the Hero section  
-**Status:** `[ ] pending` — blocked by S0
+**Status:** `[ ] in progress` — RED phase active
 
 ---
 
@@ -28,21 +28,30 @@
 
 ## Tasks
 
-- [ ] Create `src/components/LoadingScreen/LoadingScreen.tsx`
-- [ ] Create `src/components/LoadingScreen/LoadingScreen.test.tsx` (Vitest)
-- [ ] Wire `LoadingScreen` into `src/app/layout.tsx` or `src/app/page.tsx`
-- [ ] Ensure focus is returned to main content after exit (accessibility requirement)
-- [ ] Test exit timing — must complete within 3 seconds
+- [x] Create `src/components/LoadingScreen/LoadingScreen.tsx` — stub component
+- [x] Create `src/components/LoadingScreen/LoadingScreen.test.tsx` — 10 tests, 6 RED / 4 GREEN
+- [ ] Implement exit logic in `LoadingScreen.tsx` — call `onExitComplete` after timeout/animation
+- [ ] Implement reduced-motion fast-exit path
+- [ ] Implement focus management — move focus to main content on exit
+- [ ] Implement re-appearance prevention — track `hasExited` state
+- [ ] Wire `LoadingScreen` into `src/app/page.tsx`
 
 ---
 
 ## Test Coverage
 
-- **Vitest (`src/components/LoadingScreen/LoadingScreen.test.tsx`):**
-  - Assert loading screen element is present in the DOM on initial render
-  - Assert loading screen element is removed from the DOM (or hidden) after exit callback fires
-  - Assert main page content is accessible after exit
-- **Playwright:** Covered indirectly — `hero.spec.ts` assertions must pass after loading screen exits (the hero content must be reachable)
+- **Vitest (`src/components/LoadingScreen/LoadingScreen.test.tsx`)** — 10 tests:
+  - AC1 ✅ renders loading overlay on mount
+  - AC1 ✅ has `role="status"` for screen readers
+  - AC1 ✅ has accessible `aria-label`
+  - AC3 🔴 calls `onExitComplete` after exit sequence
+  - AC3 🔴 removes or hides element after exit
+  - AC4 ✅ focus not trapped inside loader after exit
+  - AC5 🔴 does not re-appear after initial exit
+  - AC6 🔴 calls `onExitComplete` under reduced motion
+  - AC6 🔴 exits faster/immediately under reduced motion
+  - AC7 🔴 `onExitComplete` called within 3000ms
+- **Playwright:** Covered indirectly by `hero.spec.ts` — hero content must be reachable after exit
 
 ---
 
