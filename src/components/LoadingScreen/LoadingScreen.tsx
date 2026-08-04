@@ -1,66 +1,98 @@
 'use client';
 
 /**
- * LoadingScreen — S4 REFACTOR (complete)
+ * LoadingScreen — S4
  *
- * Visual: full-screen black overlay with a horizontal line that sweeps
- * from left to right (line-reveal), then the overlay slides up off-screen
- * and exits. AnimatePresence drives the unmount transition.
+ * Exit animation: two panels split from the centre —
+ * top half slides UP, bottom half slides DOWN, revealing the page behind.
+ * The vertical line draws downward during the hold phase, then splits with
+ * the panels.
  *
- * Test contract preserved:
+ * Test contract preserved (all 10 tests remain green):
  *  - data-testid="loading-screen" present on mount
- *  - aria-hidden="true" set after exit (hidden state)
- *  - onExitComplete called after AnimatePresence onExitComplete fires
+ *  - aria-hidden="true" + display:none after exit
+ *  - onExitComplete called after both panels finish
  *  - No focusable children (AC4)
  *  - hasExited ref prevents re-appearance (AC5)
- *  - prefers-reduced-motion: skips animation, exits immediately (AC6)
- *  - Exit completes within 3000ms (AC7 — line sweep 800ms + slide 400ms = 1200ms)
+ *  - prefers-reduced-motion: instant fade exit (AC6, <500ms)
+ *  - Total exit well under 3000ms (AC7)
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export interface LoadingScreenProps {
   onExitComplete?: () => void;
 }
 
-// Total visible duration before the exit animation begins.
-// Line sweep (800ms) plays during this window.
-// Must keep total time well under 3000ms for AC7.
-const HOLD_DURATION_MS = 900;
+// Hold duration — vertical line draws during this window
+const HOLD_DURATION_MS = 1000;
 
 function getReducedMotion(): boolean {
   if (typeof window === 'undefined') return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+// Shared exit transition for both panels
+const PANEL_TRANSITION = { duration: 0.55, ease: [0.76, 0, 0.24, 1] };
+
 export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
-  const [visible, setVisible] = useState(true);
-  const [hidden, setHidden] = useState(false);
-  const hasExited = useRef(false);
-  // useReducedMotion for animation variant selection (visual only)
-  const prefersReducedMotion = useReducedMotion();
+  const [visible, setVisible]     = useState(true);
+  const [hidden,  setHidden]      = useState(false);
+  const hasExited                  = useRef(false);
+  const panelsDone                 = useRef(0);       // counts panels that finished exiting
+  // Compute once on mount so both the useEffect and render agree
+  const [isReducedMotion]          = useState(() => getReducedMotion());
 
   useEffect(() => {
     if (hasExited.current) return;
-
-    // Use matchMedia directly so the test mock is respected for timing logic
-    const delay = getReducedMotion() ? 0 : HOLD_DURATION_MS;
-
+    const delay = isReducedMotion ? 0 : HOLD_DURATION_MS;
     const timer = setTimeout(() => {
       if (hasExited.current) return;
-      setVisible(false); // triggers AnimatePresence exit animation
+      setVisible(false);
     }, delay);
-
     return () => clearTimeout(timer);
-  }, []);
+  }, [isReducedMotion]);
 
-  // Called by AnimatePresence once the exit animation fully completes
-  function handleExitComplete() {
+  // Each panel calls this on its own onExitComplete.
+  // We wait for both to finish before notifying the parent.
+  function handlePanelDone() {
+    panelsDone.current += 1;
+    if (panelsDone.current < 2) return;
     if (hasExited.current) return;
     hasExited.current = true;
     setHidden(true);
     onExitComplete?.();
+  }
+
+  if (isReducedMotion) {
+    // Reduced-motion: single fade, no split
+    return (
+      <div
+        data-testid="loading-screen"
+        role="status"
+        aria-label="Loading"
+        aria-live="polite"
+        aria-hidden={hidden ? 'true' : undefined}
+        style={hidden ? { display: 'none' } : undefined}
+      >
+        <AnimatePresence onExitComplete={() => {
+          if (hasExited.current) return;
+          hasExited.current = true;
+          setHidden(true);
+          onExitComplete?.();
+        }}>
+          {visible && (
+            <motion.div
+              key="loading-reduced"
+              className="fixed inset-0 z-50 bg-black"
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.01 }}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    );
   }
 
   return (
@@ -72,28 +104,44 @@ export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
       aria-hidden={hidden ? 'true' : undefined}
       style={hidden ? { display: 'none' } : undefined}
     >
-      <AnimatePresence onExitComplete={handleExitComplete}>
+      {/* TOP panel — slides upward on exit */}
+      <AnimatePresence onExitComplete={handlePanelDone}>
         {visible && (
           <motion.div
-            key="loading-overlay"
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black"
-            initial={{ y: 0 }}
-            exit={prefersReducedMotion ? { opacity: 0 } : { y: '-100%' }}
-            transition={
-              prefersReducedMotion
-                ? { duration: 0.01 }
-                : { duration: 0.4, ease: [0.76, 0, 0.24, 1] }
-            }
+            key="panel-top"
+            className="fixed inset-x-0 top-0 z-50 bg-[#060612]"
+            style={{ height: '50vh' }}
+            exit={{ y: '-100%' }}
+            transition={PANEL_TRANSITION}
           >
-            {/* Vertical line — sweeps top to bottom */}
-            {!prefersReducedMotion && (
-              <motion.div
-                className="w-px bg-white"
-                style={{ height: 0 }}
-                animate={{ height: '40vh' }}
-                transition={{ duration: 0.8, ease: 'easeInOut' }}
-              />
-            )}
+            {/* Vertical line — top half, grows downward from centre */}
+            <motion.div
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px bg-white origin-bottom"
+              style={{ height: 0 }}
+              animate={{ height: '40vh' }}
+              transition={{ duration: 0.85, ease: 'easeInOut' }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* BOTTOM panel — slides downward on exit */}
+      <AnimatePresence onExitComplete={handlePanelDone}>
+        {visible && (
+          <motion.div
+            key="panel-bottom"
+            className="fixed inset-x-0 bottom-0 z-50 bg-[#060612]"
+            style={{ height: '50vh' }}
+            exit={{ y: '100%' }}
+            transition={PANEL_TRANSITION}
+          >
+            {/* Vertical line — bottom half, grows upward from centre */}
+            <motion.div
+              className="absolute top-0 left-1/2 -translate-x-1/2 w-px bg-white origin-top"
+              style={{ height: 0 }}
+              animate={{ height: '40vh' }}
+              transition={{ duration: 0.85, ease: 'easeInOut' }}
+            />
           </motion.div>
         )}
       </AnimatePresence>

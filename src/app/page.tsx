@@ -27,7 +27,7 @@ export default function Home() {
         tabIndex={-1}
         aria-hidden={!loaded ? 'true' : undefined}
       >
-        <Hero />
+        <Hero scrambleTrigger={loaded} />
       </main>
     </>
   );

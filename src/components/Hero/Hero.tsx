@@ -13,7 +13,12 @@ import { TechTicker } from './TechTicker';
 import { PhotoTicker } from './PhotoTicker';
 import { MagneticBackground } from './MagneticBackground';
 
-export function Hero() {
+interface HeroProps {
+  /** Pass true once the loading screen has exited to start ScrambleText */
+  scrambleTrigger?: boolean;
+}
+
+export function Hero({ scrambleTrigger = true }: HeroProps) {
   return (
     <section
       data-testid="hero-section"
@@ -43,7 +48,7 @@ export function Hero() {
           style={{ background: 'linear-gradient(to bottom, transparent, rgba(6,6,18,0.6) 40%, rgba(6,6,18,0.7) 100%)' }}
         >
           <h1 className="text-5xl font-bold tracking-tight md:text-7xl drop-shadow-lg">
-            <ScrambleText text={identity.name} />
+            <ScrambleText text={identity.name} trigger={scrambleTrigger} />
           </h1>
           <p
             data-testid="job-title"

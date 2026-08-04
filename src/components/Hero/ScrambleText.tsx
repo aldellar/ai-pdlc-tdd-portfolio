@@ -17,13 +17,17 @@ const FRAME_INTERVAL = 40;   // ms between frames
 interface ScrambleTextProps {
   text: string;
   className?: string;
+  /** When false the scramble is held back. Set to true to start the animation. */
+  trigger?: boolean;
 }
 
-export function ScrambleText({ text, className }: ScrambleTextProps) {
+export function ScrambleText({ text, className, trigger = true }: ScrambleTextProps) {
   const [display, setDisplay] = useState(text);
   const frameRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    // Wait until the trigger fires (loading screen finished)
+    if (!trigger) return;
     if (!text) return;
 
     // Respect prefers-reduced-motion — skip scramble entirely.
@@ -61,9 +65,9 @@ export function ScrambleText({ text, className }: ScrambleTextProps) {
     return () => {
       if (frameRef.current) clearInterval(frameRef.current);
     };
-  // text is stable — only run on mount
+  // re-run when trigger flips to true
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [trigger]);
 
   return (
     <span data-testid="scramble-text" className={className} aria-label={text}>
