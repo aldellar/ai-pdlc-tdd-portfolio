@@ -107,5 +107,6 @@ pnpm vitest
 | ADR-001: Tech Stack | [`docs/decisions/ADR-001-tech-stack.md`](docs/decisions/ADR-001-tech-stack.md) | Delivery | Framework, animation, CSS, and tooling decisions |
 | OpA | [`docs/discovery/OpA.md`](docs/discovery/OpA.md) | Discovery | Opportunity assessment — problem, personas, risk scores, and success criteria |
 | PR-FAQ | [`docs/discovery/PR-FAQ.md`](docs/discovery/PR-FAQ.md) | Discovery | Working backwards press release + customer and internal FAQs |
+| Epic v1 | [`docs/delivery/Epic-portfolio-v1.md`](docs/delivery/Epic-portfolio-v1.md) | Delivery | Full user requirements by persona, NFRs, assumptions, and success metrics |
 
 More documents will be added as Discovery and Delivery phases progress.
