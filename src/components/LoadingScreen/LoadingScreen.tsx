@@ -76,7 +76,7 @@ export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
         {visible && (
           <motion.div
             key="loading-overlay"
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black"
             initial={{ y: 0 }}
             exit={prefersReducedMotion ? { opacity: 0 } : { y: '-100%' }}
             transition={
@@ -85,12 +85,12 @@ export function LoadingScreen({ onExitComplete }: LoadingScreenProps) {
                 : { duration: 0.4, ease: [0.76, 0, 0.24, 1] }
             }
           >
-            {/* Line-reveal bar — sweeps left to right */}
+            {/* Vertical line — sweeps top to bottom */}
             {!prefersReducedMotion && (
               <motion.div
-                className="h-px w-full max-w-sm bg-white"
-                initial={{ scaleX: 0, originX: 0 }}
-                animate={{ scaleX: 1 }}
+                className="w-px bg-white"
+                style={{ height: 0 }}
+                animate={{ height: '40vh' }}
                 transition={{ duration: 0.8, ease: 'easeInOut' }}
               />
             )}
