@@ -1,8 +1,8 @@
 # S1: Identity / Hero Section
 
-**Sprint:** Sprint 1  
-**Priority:** P1 — First user-visible feature  
-**Status:** `[ ] pending` — blocked by S0
+**Sprint:** Sprint 1
+**Priority:** P1 — First user-visible feature
+**Status:** `[x] complete` — 70/70 tests green (31 Vitest + 39 Playwright)
 
 ---
 
@@ -32,38 +32,42 @@
 
 ## Tasks
 
-- [ ] Create `src/components/Hero/Hero.tsx` — section wrapper
-- [ ] Create `src/components/Hero/ScrambleText.tsx` — scramble-text name animation
-- [ ] Create `src/components/Hero/TechTicker.tsx` — horizontal infinite icon marquee
-- [ ] Create `src/components/Hero/PhotoTicker.tsx` — 3-column vertical auto-scroll
-- [ ] Add tech stack icon list and photo paths to `src/lib/data.ts`
-- [ ] Wire `Hero` into `src/app/page.tsx`
-- [ ] Write `src/components/Hero/Hero.test.tsx` (Vitest — component renders name, title, degree)
-- [ ] Write `tests/e2e/hero.spec.ts` (Playwright — name, title, degree, experience visible in DOM)
+- [x] Create `src/lib/types.ts` — WorkEntry, Project, TechIcon types
+- [x] Create `src/lib/data.ts` — identity, techIcons, heroPhotos, workHistory, projects
+- [x] Write `src/components/Hero/Hero.test.tsx` — 17 Vitest tests (RED → GREEN)
+- [x] Write `tests/e2e/hero.spec.ts` — 13 Playwright tests × 3 browsers (RED → GREEN)
+- [x] Create `src/components/Hero/ScrambleText.tsx` — scramble animation + reduced motion
+- [x] Create `src/components/Hero/TechTicker.tsx` — horizontal marquee + reduced motion
+- [x] Create `src/components/Hero/PhotoTicker.tsx` — 3-column vertical scroll + reduced motion
+- [x] Create `src/components/Hero/Hero.tsx` — section wrapper with Tailwind layout
+- [x] Wire `Hero` + `LoadingScreen` into `src/app/page.tsx`
+- [x] REFACTOR — full Tailwind layout, Framer Motion animations, CSS keyframes in globals.css
 
 ---
 
 ## Test Coverage
 
-- **Playwright (`tests/e2e/hero.spec.ts`):**
-  - Assert Drew's name is present in the DOM
-  - Assert job title text is present
-  - Assert degree and experience level text is present
-  - Assert at least one tech icon ticker element is present
-  - Assert photo elements are present and have `alt` attributes
-- **Vitest (`src/components/Hero/Hero.test.tsx`):**
-  - Assert `Hero` renders all identity text from props
-  - Assert `TechTicker` renders icon items from a data array
-  - Assert `ScrambleText` renders the resolved final text in the DOM
+- **Vitest (`src/components/Hero/Hero.test.tsx`)** — 17 tests, all ✅:
+  - AC1 ✅ name present, AC2 ✅ job title, AC3 ✅ degree, AC3 ✅ experience
+  - AC10 ✅ scramble-text resolves to name, ✅ empty string, ✅ special chars
+  - AC4/8 ✅ icons have aria-labels, ✅ all icons rendered, ✅ single-item array
+  - AC6/7 ✅ 3 photo columns, ✅ each column has photos, ✅ all images have alt
+  - AC6 ✅ empty photo array no crash
+  - Integration ✅ name from data.ts, ✅ icon count from data.ts, ✅ photo srcs from data.ts
+- **Playwright (`tests/e2e/hero.spec.ts`)** — 13 tests × 3 browsers = 39 runs, all ✅:
+  - ✅ name, job title, degree, experience visible on root route
+  - ✅ two tech tickers present, all icons have aria-labels
+  - ✅ 3 photo columns, all images have alt text
+  - ✅ name visible at 375px, 768px, 1440px
 
 ---
 
 ## Definition of Done
 
-- `hero.spec.ts` is green on CI
-- `Hero.test.tsx` is green on CI
-- Section is visible on Vercel preview URL
-- Scramble-text, photo strip, and both tickers are animated in the refactor pass
+- [x] `Hero.test.tsx` — 17/17 Vitest tests green
+- [x] `hero.spec.ts` — 39/39 Playwright tests green (Chromium, Firefox, WebKit)
+- [x] Scramble-text, photo strip tickers, and both icon tickers animated (REFACTOR complete)
+- [ ] Section visible on Vercel preview URL — push to deploy
 
 ---
 

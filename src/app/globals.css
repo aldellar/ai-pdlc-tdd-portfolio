@@ -24,3 +24,34 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* -----------------------------------------------------------------------
+   Ticker animations — used by TechTicker and PhotoTicker
+   ----------------------------------------------------------------------- */
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes scroll-slow {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@keyframes scroll-medium {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@keyframes scroll-fast {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@theme inline {
+  --animate-ticker:        ticker 20s linear infinite;
+  --animate-scroll-slow:   scroll-slow 18s linear infinite;
+  --animate-scroll-medium: scroll-medium 12s linear infinite;
+  --animate-scroll-fast:   scroll-fast 8s linear infinite;
+}
