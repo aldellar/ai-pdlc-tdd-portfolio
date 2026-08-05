@@ -70,11 +70,19 @@ export function InfoGrid() {
     >
       {TILES.map((tile) => {
         const inner = (
-          <div className="flex items-start gap-4 py-2">
-            <span className="text-3xl leading-none mt-1 shrink-0" aria-hidden="true">
+          <div className="relative flex items-start gap-4 py-2">
+            {/* scrim — sits only behind the emoji + text, dissolves outward */}
+            <div
+              className="absolute inset-0 pointer-events-none rounded-xl"
+              style={{
+                background: 'radial-gradient(ellipse 120% 140% at 30% 50%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 50%, transparent 100%)',
+                filter: 'blur(8px)',
+              }}
+            />
+            <span className="relative text-3xl leading-none mt-1 shrink-0" aria-hidden="true">
               {tile.emoji}
             </span>
-            <div className="flex flex-col min-w-0">
+            <div className="relative flex flex-col min-w-0">
               <span className="text-xs uppercase tracking-widest text-white/40 mb-0.5">
                 {tile.label}
               </span>
