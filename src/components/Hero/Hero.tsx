@@ -57,10 +57,15 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
 
       {/* 2 — Tech ticker ABOVE photos (scrolls right) */}
       <div className="relative z-10">
-        {/* scrim — feathered top and bottom, no hard edge */}
+        {/* scrim — masked horizontally to match ticker visibility zone */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.35) 60%, transparent 100%)', filter: 'blur(6px)' }}
+          style={{
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.35) 60%, transparent 100%)',
+            filter: 'blur(6px)',
+            maskImage: 'linear-gradient(to right, transparent 0%, transparent 17%, black 23%, black 77%, transparent 83%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, transparent 17%, black 23%, black 77%, transparent 83%, transparent 100%)',
+          }}
         />
         <TechTicker
           icons={techIcons}
@@ -79,10 +84,15 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
 
       {/* 4 — Tech ticker BELOW photos */}
       <div className="relative z-10">
-        {/* scrim — feathered top and bottom, no hard edge */}
+        {/* scrim — masked horizontally to match ticker visibility zone */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.35) 60%, transparent 100%)', filter: 'blur(6px)' }}
+          style={{
+            background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.35) 60%, transparent 100%)',
+            filter: 'blur(6px)',
+            maskImage: 'linear-gradient(to right, transparent 0%, transparent 17%, black 23%, black 77%, transparent 83%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, transparent 17%, black 23%, black 77%, transparent 83%, transparent 100%)',
+          }}
         />
         <TechTicker
           icons={techIcons}

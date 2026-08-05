@@ -40,7 +40,6 @@ export function TechTicker({ icons, className, reverse = false }: TechTickerProp
           'flex gap-8 w-max',
           reduceMotion ? '' : `${animClass} hover:[animation-play-state:paused]`,
         ].join(' ')}
-        style={reduceMotion ? undefined : { transform: 'translateX(-33.333%)' }}
       >
         {items.map((icon, index) => (
           <span

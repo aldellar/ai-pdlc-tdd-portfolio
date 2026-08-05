@@ -36,13 +36,13 @@ html.custom-cursor * {
    ----------------------------------------------------------------------- */
 
 @keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-33.333%); }
+  from { transform: translateX(-33.333%); }
+  to   { transform: translateX(-66.666%); }
 }
 
 @keyframes ticker-reverse {
-  from { transform: translateX(-33.333%); }
-  to   { transform: translateX(0); }
+  from { transform: translateX(-66.666%); }
+  to   { transform: translateX(-33.333%); }
 }
 
 @keyframes scroll-slow {

@@ -36,7 +36,7 @@ function getReducedMotion(): boolean {
 }
 
 // Shared exit transition for both panels
-const PANEL_TRANSITION = { duration: 0.55, ease: [0.76, 0, 0.24, 1] };
+const PANEL_TRANSITION = { duration: 0.55, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] };
 
 export function LoadingScreen({ onExitComplete, onSeparate }: LoadingScreenProps) {
   const [visible, setVisible]     = useState(true);
