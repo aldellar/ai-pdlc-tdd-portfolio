@@ -36,9 +36,23 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
 
       {/* 1 — Name */}
       <div className="relative z-10 flex items-center justify-center pt-20 pb-8 px-6">
-        <h1 className="text-6xl font-bold tracking-tight text-white md:text-8xl drop-shadow-lg text-center">
-          <ScrambleText text={identity.name} trigger={scrambleTrigger} />
-        </h1>
+        {/* wrapper shrinks to text width so the scrim hugs the letters */}
+        <div className="relative inline-block">
+          {/* scrim — behind the text, blurred outward, never covers the letters */}
+          <div
+            aria-hidden="true"
+            className="absolute pointer-events-none"
+            style={{
+              inset: '-0.2em -0.5em',
+              zIndex: -1,
+              background: 'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(0,0,0,0.60) 20%, rgba(0,0,0,0.30) 60%, transparent 100%)',
+              filter: 'blur(18px)',
+            }}
+          />
+          <h1 className="relative text-6xl font-bold tracking-tight text-white md:text-8xl drop-shadow-lg text-center">
+            <ScrambleText text={identity.name} trigger={scrambleTrigger} />
+          </h1>
+        </div>
       </div>
 
       {/* 2 — Tech ticker ABOVE photos (scrolls right) */}
