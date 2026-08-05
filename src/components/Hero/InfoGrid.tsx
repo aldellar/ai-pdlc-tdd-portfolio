@@ -66,19 +66,19 @@ export function InfoGrid() {
   return (
     <div
       data-testid="info-grid"
-      className="grid grid-cols-2 gap-x-6 gap-y-1"
+      className="grid grid-cols-2 gap-x-16 gap-y-6"
     >
       {TILES.map((tile) => {
         const inner = (
-          <div className="flex items-start gap-3 py-3">
-            <span className="text-xl leading-none mt-0.5" aria-hidden="true">
+          <div className="flex items-start gap-4 py-2">
+            <span className="text-3xl leading-none mt-1 shrink-0" aria-hidden="true">
               {tile.emoji}
             </span>
             <div className="flex flex-col min-w-0">
-              <span className="text-[10px] uppercase tracking-widest text-white/40">
+              <span className="text-xs uppercase tracking-widest text-white/40 mb-0.5">
                 {tile.label}
               </span>
-              <span className="text-sm font-medium text-white/90 leading-snug truncate">
+              <span className="text-base font-semibold text-white/95 leading-snug">
                 {tile.value}
               </span>
             </div>

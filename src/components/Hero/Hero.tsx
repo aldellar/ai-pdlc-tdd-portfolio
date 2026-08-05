@@ -66,8 +66,8 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
         />
       </div>
 
-      {/* 5 — 3×2 info grid */}
-      <div className="relative z-10 px-4 pt-4 pb-6 max-w-2xl mx-auto w-full">
+      {/* 5 — 3×2 info grid — width matched to the name heading */}
+      <div className="relative z-10 px-6 pt-6 pb-8 max-w-4xl mx-auto w-full">
         <InfoGrid />
       </div>
 
