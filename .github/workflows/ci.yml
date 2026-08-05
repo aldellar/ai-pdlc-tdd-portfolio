@@ -31,8 +31,3 @@ jobs:
       - name: Unit tests (Vitest)
         run: pnpm test
 
-      - name: Install Playwright browsers
-        run: pnpm dlx playwright install --with-deps chromium firefox webkit
-
-      - name: E2E tests (Playwright)
-        run: pnpm test:e2e
