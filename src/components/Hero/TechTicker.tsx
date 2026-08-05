@@ -14,13 +14,16 @@ import type { TechIcon } from '@/lib/types';
 interface TechTickerProps {
   icons: TechIcon[];
   className?: string;
+  reverse?: boolean;
 }
 
-export function TechTicker({ icons, className }: TechTickerProps) {
+export function TechTicker({ icons, className, reverse = false }: TechTickerProps) {
   const reduceMotion = useReducedMotion();
 
   // Duplicate list for seamless loop (CSS animation wraps back to start)
   const items = reduceMotion ? icons : [...icons, ...icons];
+
+  const animClass = reverse ? 'animate-ticker-reverse' : 'animate-ticker';
 
   return (
     <div
@@ -30,7 +33,7 @@ export function TechTicker({ icons, className }: TechTickerProps) {
       <div
         className={[
           'flex gap-8 w-max',
-          reduceMotion ? '' : 'animate-ticker hover:[animation-play-state:paused]',
+          reduceMotion ? '' : `${animClass} hover:[animation-play-state:paused]`,
         ].join(' ')}
         style={reduceMotion ? undefined : { transform: 'translateX(-25%)' }}
       >

@@ -41,11 +41,12 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
         </h1>
       </div>
 
-      {/* 2 — Tech ticker ABOVE photos */}
+      {/* 2 — Tech ticker ABOVE photos (scrolls right) */}
       <div className="relative z-10">
         <TechTicker
           icons={techIcons}
           className="py-4 border-y border-white/10"
+          reverse
         />
       </div>
 
