@@ -36,27 +36,17 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
 
       {/* 1 — Name */}
       <div className="relative z-10 flex items-center justify-center pt-20 pb-8 px-6">
-        <h1 className="relative text-6xl font-bold tracking-tight text-white md:text-8xl drop-shadow-lg text-center">
-          {/* scrim — tight behind the text only, blurred so it dissolves */}
-          <span
-            className="absolute pointer-events-none"
-            style={{
-              inset: '-0.15em -0.4em',
-              background: 'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(0,0,0,0.50) 0%, transparent 70%)',
-              filter: 'blur(12px)',
-              borderRadius: '0.5em',
-            }}
-          />
+        <h1 className="text-6xl font-bold tracking-tight text-white md:text-8xl drop-shadow-lg text-center">
           <ScrambleText text={identity.name} trigger={scrambleTrigger} />
         </h1>
       </div>
 
       {/* 2 — Tech ticker ABOVE photos (scrolls right) */}
       <div className="relative z-10">
-        {/* scrim */}
+        {/* scrim — feathered top and bottom, no hard edge */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.45) 70%, transparent 100%)' }}
+          style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.35) 60%, transparent 100%)', filter: 'blur(6px)' }}
         />
         <TechTicker
           icons={techIcons}
@@ -75,10 +65,10 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
 
       {/* 4 — Tech ticker BELOW photos */}
       <div className="relative z-10">
-        {/* scrim */}
+        {/* scrim — feathered top and bottom, no hard edge */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.45) 30%, rgba(0,0,0,0.45) 70%, transparent 100%)' }}
+          style={{ background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.35) 60%, transparent 100%)', filter: 'blur(6px)' }}
         />
         <TechTicker
           icons={techIcons}

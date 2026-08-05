@@ -83,10 +83,10 @@ export function InfoGrid() {
               {tile.emoji}
             </span>
             <div className="relative flex flex-col min-w-0">
-              <span className="text-xs uppercase tracking-widest text-white/40 mb-0.5">
+              <span className="text-xs uppercase tracking-widest text-white/60 mb-0.5">
                 {tile.label}
               </span>
-              <span className="text-base font-semibold text-white/95 leading-snug">
+              <span className="text-base font-semibold text-white leading-snug drop-shadow-sm">
                 {tile.value}
               </span>
             </div>
