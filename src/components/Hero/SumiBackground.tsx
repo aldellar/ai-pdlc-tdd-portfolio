@@ -206,8 +206,8 @@ export function SumiBackground() {
       }
 
       // --- erase centre column so particles only show on the side margins ---
-      // Centre column = middle 52% of viewport width (narrower than before)
-      const colW  = W * 0.52;
+      // Centre column = middle 72% of viewport width (matches the content area)
+      const colW  = W * 0.72;
       const colX  = (W - colW) / 2;
       const fadeW = W * 0.06; // feather width each side
 

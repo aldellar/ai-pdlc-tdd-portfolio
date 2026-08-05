@@ -69,10 +69,9 @@ const ORBS: Orb[] = [
 ];
 
 export function MagneticBackground() {
-  const canvasRef      = useRef<HTMLCanvasElement>(null);
-  const mouseRef       = useRef({ x: 0.5, y: 0.5, active: false });
-  const rafRef         = useRef<number>(0);
-  const orbsRef        = useRef<Orb[]>(ORBS.map(o => ({ ...o })));
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef    = useRef<number>(0);
+  const orbsRef    = useRef<Orb[]>(ORBS.map(o => ({ ...o })));
   const prefersReduced = useReducedMotion();
 
   useEffect(() => {
@@ -88,7 +87,6 @@ export function MagneticBackground() {
     }
     resize();
     window.addEventListener('resize', resize);
-
 
     let t = 0;
 
