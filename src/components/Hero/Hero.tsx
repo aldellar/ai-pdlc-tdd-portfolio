@@ -15,6 +15,7 @@ import { TechTicker } from './TechTicker';
 import { PhotoTicker } from './PhotoTicker';
 import { InfoGrid } from './InfoGrid';
 import { MagneticBackground } from './MagneticBackground';
+import { SumiBackground } from './SumiBackground';
 
 interface HeroProps {
   /** Pass true once the loading screen has exited to start ScrambleText */
@@ -28,8 +29,10 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
       aria-label="Hero"
       className="relative w-full overflow-hidden bg-[#060612]"
     >
-      {/* Magnetic gradient orb background — sits behind everything */}
+      {/* Layer 0 — colour orbs */}
       <MagneticBackground />
+      {/* Layer 1 — white sumi-e ink particles */}
+      <SumiBackground />
 
       {/* 1 — Name */}
       <div className="relative z-10 flex items-center justify-center pt-20 pb-8 px-6">
