@@ -205,6 +205,35 @@ export function SumiBackground() {
         ctx.fill();
       }
 
+      // --- erase centre column so particles only show on the side margins ---
+      // Centre column = middle 52% of viewport width (narrower than before)
+      const colW  = W * 0.52;
+      const colX  = (W - colW) / 2;
+      const fadeW = W * 0.06; // feather width each side
+
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-out';
+
+      // left feather
+      const leftGrad = ctx.createLinearGradient(colX, 0, colX + fadeW, 0);
+      leftGrad.addColorStop(0, 'rgba(0,0,0,0)');
+      leftGrad.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.fillStyle = leftGrad;
+      ctx.fillRect(colX, 0, fadeW, H);
+
+      // solid centre erase
+      ctx.fillStyle = 'rgba(0,0,0,1)';
+      ctx.fillRect(colX + fadeW, 0, colW - fadeW * 2, H);
+
+      // right feather
+      const rightGrad = ctx.createLinearGradient(colX + colW - fadeW, 0, colX + colW, 0);
+      rightGrad.addColorStop(0, 'rgba(0,0,0,1)');
+      rightGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = rightGrad;
+      ctx.fillRect(colX + colW - fadeW, 0, fadeW, H);
+
+      ctx.restore();
+
       rafRef.current = requestAnimationFrame(draw);
     }
 

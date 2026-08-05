@@ -89,15 +89,6 @@ export function MagneticBackground() {
     resize();
     window.addEventListener('resize', resize);
 
-    function onMouseMove(e: MouseEvent) {
-      if (prefersReduced) return;
-      mouseRef.current = {
-        x: e.clientX / window.innerWidth,
-        y: e.clientY / window.innerHeight,
-        active: true,
-      };
-    }
-    window.addEventListener('mousemove', onMouseMove);
 
     let t = 0;
 
@@ -122,18 +113,8 @@ export function MagneticBackground() {
         const driftX = Math.sin(t * orb.driftSpeed + orb.driftPhase) * orb.driftAmp;
         const driftY = Math.cos(t * orb.driftSpeed * 0.73 + orb.driftPhase + 1.1) * orb.driftAmp;
 
-        if (mouseRef.current.active && !prefersReduced) {
-          // Magnetic pull blends with autonomous drift
-          orb.tx = orb.baseX
-            + (mouseRef.current.x - orb.baseX) * 0.35
-            + driftX;
-          orb.ty = orb.baseY
-            + (mouseRef.current.y - orb.baseY) * 0.28
-            + driftY;
-        } else {
-          orb.tx = orb.baseX + driftX;
-          orb.ty = orb.baseY + driftY;
-        }
+        orb.tx = orb.baseX + driftX;
+        orb.ty = orb.baseY + driftY;
 
         // Lerp toward target
         orb.x += (orb.tx - orb.x) * orb.speed;
@@ -165,7 +146,6 @@ export function MagneticBackground() {
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', onMouseMove);
     };
   }, [prefersReduced]);
 
