@@ -20,8 +20,9 @@ interface TechTickerProps {
 export function TechTicker({ icons, className, reverse = false }: TechTickerProps) {
   const reduceMotion = useReducedMotion();
 
-  // Duplicate list for seamless loop (CSS animation wraps back to start)
-  const items = reduceMotion ? icons : [...icons, ...icons];
+  // Triple the list — 3 copies so there is always a full screen of icons
+  // on both sides of the visible area, eliminating any visible seam/teleport
+  const items = reduceMotion ? icons : [...icons, ...icons, ...icons];
 
   const animClass = reverse ? 'animate-ticker-reverse' : 'animate-ticker';
 
@@ -35,7 +36,7 @@ export function TechTicker({ icons, className, reverse = false }: TechTickerProp
           'flex gap-8 w-max',
           reduceMotion ? '' : `${animClass} hover:[animation-play-state:paused]`,
         ].join(' ')}
-        style={reduceMotion ? undefined : { transform: 'translateX(-25%)' }}
+        style={reduceMotion ? undefined : { transform: 'translateX(-33.333%)' }}
       >
         {items.map((icon, index) => (
           <span

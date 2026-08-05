@@ -26,14 +26,21 @@ export const identity = {
 export const techIcons: TechIcon[] = [
   { label: 'TypeScript',  src: '/icons/typescript.svg'  },
   { label: 'React',       src: '/icons/react.svg'       },
-  { label: 'Next.js',     src: '/icons/nextjs.svg'      },
-  { label: 'Node.js',     src: '/icons/nodejs.svg'      },
+  { label: 'Next.js',     src: '/icons/nextdotjs.svg'   },
+  { label: 'Node.js',     src: '/icons/nodedotjs.svg'   },
   { label: 'Python',      src: '/icons/python.svg'      },
-  { label: 'Tailwind CSS',src: '/icons/tailwind.svg'    },
+  { label: 'Tailwind CSS',src: '/icons/tailwindcss.svg' },
   { label: 'PostgreSQL',  src: '/icons/postgresql.svg'  },
   { label: 'Docker',      src: '/icons/docker.svg'      },
   { label: 'Git',         src: '/icons/git.svg'         },
   { label: 'Figma',       src: '/icons/figma.svg'       },
+  { label: 'Swift',       src: '/icons/swift.svg'       },
+  { label: 'Playwright',  src: '/icons/playwright.svg'  },
+  { label: 'OpenAI',      src: '/icons/openai.svg'      },
+  { label: 'HTML5',       src: '/icons/html5.svg'       },
+  { label: 'CSS3',        src: '/icons/css3.svg'        },
+  { label: 'Xcode',       src: '/icons/xcode.svg'       },
+  { label: 'Postman',     src: '/icons/postman.svg'     },
 ];
 
 // ---------------------------------------------------------------------------
