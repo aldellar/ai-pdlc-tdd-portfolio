@@ -30,6 +30,10 @@ export function TechTicker({ icons, className, reverse = false }: TechTickerProp
     <div
       data-testid="tech-ticker"
       className={`overflow-hidden flex justify-center ${className ?? ''}`}
+      style={{
+        maskImage: 'linear-gradient(to right, transparent 0%, transparent 17%, black 23%, black 77%, transparent 83%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, transparent 17%, black 23%, black 77%, transparent 83%, transparent 100%)',
+      }}
     >
       <div
         className={[
