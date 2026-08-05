@@ -33,7 +33,7 @@ export function PhotoTicker({ photos, className }: PhotoTickerProps) {
   return (
     <div
       data-testid="photo-ticker"
-      className={`flex gap-4 overflow-hidden ${className ?? ''}`}
+      className={`flex gap-4 justify-center overflow-hidden ${className ?? ''}`}
     >
       {columns.map((col, colIndex) => {
         // Duplicate for seamless loop unless reduced motion

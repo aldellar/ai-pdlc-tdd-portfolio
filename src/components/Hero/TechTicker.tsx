@@ -25,13 +25,14 @@ export function TechTicker({ icons, className }: TechTickerProps) {
   return (
     <div
       data-testid="tech-ticker"
-      className={`overflow-hidden ${className ?? ''}`}
+      className={`overflow-hidden flex justify-center ${className ?? ''}`}
     >
       <div
         className={[
           'flex gap-8 w-max',
           reduceMotion ? '' : 'animate-ticker hover:[animation-play-state:paused]',
         ].join(' ')}
+        style={reduceMotion ? undefined : { transform: 'translateX(-25%)' }}
       >
         {items.map((icon, index) => (
           <span
