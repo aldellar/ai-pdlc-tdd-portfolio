@@ -28,17 +28,17 @@ test.describe('S1 — Hero section', () => {
 
   test('job-title-is-present — job title visible on root route', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('Software Engineer @ IBM')).toBeVisible();
+    await expect(page.getByText('SWE @ IBM').first()).toBeVisible();
   });
 
   test('degree-is-present — degree text visible on root route', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('B.S. Computer Science, UC Santa Cruz')).toBeVisible();
+    await expect(page.getByText('B.A. Computer Science, UC Santa Cruz').first()).toBeVisible();
   });
 
   test('experience-level-is-present — experience level visible on root route', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('Junior — 2+ years')).toBeVisible();
+    await expect(page.getByText('Junior Developer — 2 years').first()).toBeVisible();
   });
 
   // -------------------------------------------------------------------------

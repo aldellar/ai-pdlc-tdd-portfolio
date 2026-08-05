@@ -11,10 +11,13 @@ import type { TechIcon, WorkEntry, Project } from './types';
 // Identity
 // ---------------------------------------------------------------------------
 export const identity = {
-  name: 'Andrew Dellaringa',
-  title: 'Software Engineer @ IBM',
-  degree: 'B.S. Computer Science, UC Santa Cruz',
-  experience: 'Junior — 2+ years',
+  name: "Andrew Dell'Aringa",
+  title: 'SWE @ IBM',
+  degree: 'B.A. Computer Science, UC Santa Cruz',
+  experience: 'Junior Developer — 2 years',
+  email: 'dellaringa@ibm.com',
+  linkedin: 'https://www.linkedin.com/in/andrewdellaringa/',
+  instagram: 'https://www.instagram.com/d3llaringa',
 };
 
 // ---------------------------------------------------------------------------

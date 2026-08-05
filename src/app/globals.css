@@ -25,6 +25,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Hide native cursor when MagneticCursor is active */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none !important;
+}
+
 /* -----------------------------------------------------------------------
    Ticker animations — used by TechTicker and PhotoTicker
    ----------------------------------------------------------------------- */

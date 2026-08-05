@@ -19,24 +19,24 @@ import { identity, techIcons, heroPhotos } from '@/lib/data';
 // A. Happy Path
 // ---------------------------------------------------------------------------
 describe('S1 — AC1/2/3/4: identity text', () => {
-  it('name-is-present — renders Drew\'s full name', () => {
+  it("name-is-present — renders Drew's full name", () => {
     render(<Hero />);
     expect(screen.getByText(identity.name)).toBeDefined();
   });
 
   it('job-title-is-present — renders job title', () => {
     render(<Hero />);
-    expect(screen.getByText(identity.title)).toBeDefined();
+    expect(screen.getAllByText(identity.title).length).toBeGreaterThan(0);
   });
 
   it('degree-is-present — renders degree text', () => {
     render(<Hero />);
-    expect(screen.getByText(identity.degree)).toBeDefined();
+    expect(screen.getAllByText(identity.degree).length).toBeGreaterThan(0);
   });
 
   it('experience-level-is-present — renders experience level', () => {
     render(<Hero />);
-    expect(screen.getByText(identity.experience)).toBeDefined();
+    expect(screen.getAllByText(identity.experience).length).toBeGreaterThan(0);
   });
 });
 
