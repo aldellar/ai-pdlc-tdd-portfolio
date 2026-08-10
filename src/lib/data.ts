@@ -74,7 +74,7 @@ export const workHistory: WorkEntry[] = [
       'Collaborate with cross-functional engineering teams to troubleshoot production issues, improve observability, and reduce operational overhead through automation and monitoring enhancements.',
       'Participate in code reviews, technical design discussions, and agile development processes, delivering high-quality software while ensuring compliance with security and infrastructure standards.',
     ],
-    logoSrc: '/logos/ibm.svg',
+    logoSrc: '/logos/ibm.jpeg',
     url: 'https://www.ibm.com',
   },
   {
@@ -91,8 +91,8 @@ export const workHistory: WorkEntry[] = [
       'Led technical interviews and onboarding for new iOS engineers, helping expand the team from concept to execution while maintaining high code quality and accelerating onboarding in a fast-paced startup environment.',
       'Partnered directly with company founders to plan, scope, and iterate on core product features, ensuring alignment between business goals, technical feasibility, and user experience in a rapidly evolving startup environment.',
     ],
-    logoSrc: '/logos/whats-the-move.svg',
-    url: 'https://www.instagram.com/whatsthemoveapp/',
+    logoSrc: '/logos/whats-the-move.webp',
+    url: 'https://wtmofficial.com/',
   },
   {
     company: 'Lighthouse IT Consulting',
@@ -108,8 +108,8 @@ export const workHistory: WorkEntry[] = [
       'Designed and implemented automated HR pipelines using Zoho Flow, Forms, CRM/People, and Zoho Sign, eliminating manual processes and improving operational efficiency.',
       'Conducted website audits for functionality and ADA/WCAG compliance, delivering technical documentation and training to support maintainability and system adoption.',
     ],
-    logoSrc: '/logos/lighthouse.svg',
-    url: 'https://www.linkedin.com/in/andrewdellaringa/',
+    logoSrc: '/logos/lighthouse.png',
+    url: 'https://www.linkedin.com/company/lighthouse-it-consulting/',
   },
 ];
 
