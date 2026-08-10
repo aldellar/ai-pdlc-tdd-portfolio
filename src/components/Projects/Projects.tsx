@@ -23,15 +23,15 @@ export function Projects() {
         <h2 className="text-4xl md:text-5xl font-bold text-white">Personal Projects</h2>
       </div>
 
-      {/* Card stack — centred single column matching the reference layout */}
+      {/* Card stack */}
       <div
         style={{
           margin: '0 auto',
-          maxWidth: 500,
-          paddingBottom: 200,
+          maxWidth: 600,
+          paddingBottom: 240,
           width: '100%',
-          paddingLeft: 16,
-          paddingRight: 16,
+          paddingLeft: 24,
+          paddingRight: 24,
         }}
       >
         {projects.map((project, i) => (
