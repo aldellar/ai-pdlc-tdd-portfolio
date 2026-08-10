@@ -58,14 +58,6 @@ export function WorkGallery() {
       data-testid="work-gallery-section"
       className="relative bg-[#060612]"
     >
-      {/* Section header */}
-      <div className="px-8 md:px-16 pt-20 pb-12 border-b border-white/10">
-        <p className="text-white/40 text-xs uppercase tracking-[0.25em] mb-3">02 — Experience</p>
-        <h2 className="text-4xl md:text-5xl font-bold text-white">
-          Experience
-        </h2>
-      </div>
-
       {/* Scroll container — N * 100vh tall */}
       <div
         ref={containerRef}
