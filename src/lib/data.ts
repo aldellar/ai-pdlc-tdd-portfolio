@@ -75,7 +75,7 @@ export const workHistory: WorkEntry[] = [
       'Participate in code reviews, technical design discussions, and agile development processes, delivering high-quality software while ensuring compliance with security and infrastructure standards.',
     ],
     logoSrc: '/logos/ibm.jpeg',
-    url: 'https://www.ibm.com',
+    url: 'https://www.ibm.com/products/content-cortex',
   },
   {
     company: "What's The Move",

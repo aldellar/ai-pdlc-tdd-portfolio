@@ -69,11 +69,23 @@ export function TerminalPanel({ entry, index, isActive }: TerminalPanelProps) {
       data-role={entry.role}
       className="relative flex-shrink-0 w-screen h-screen flex items-center justify-center gap-8 px-8 md:px-16 lg:px-24"
     >
+      {/* Dark radial scrim — rendered first so it sits behind all content */}
+      <div
+        aria-hidden="true"
+        className="absolute pointer-events-none z-0"
+        style={{
+          inset: 0,
+          background: 'radial-gradient(ellipse 80% 70% at 50% 50%, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.45) 45%, transparent 100%)',
+          filter: 'blur(18px)',
+        }}
+      />
+
       {/* Hidden static text for test/SEO discoverability regardless of animation state */}
       <span className="sr-only">{entry.role}</span>
       <span className="sr-only">{entry.company}</span>
+
       {/* ── LEFT: company logo + label ─────────────────────────────────── */}
-      <div className="hidden md:flex flex-col items-center gap-4 w-[180px] shrink-0">
+      <div className="relative z-10 hidden md:flex flex-col items-center gap-4 w-[180px] shrink-0">
         <a
           href={entry.url}
           target="_blank"
@@ -107,7 +119,7 @@ export function TerminalPanel({ entry, index, isActive }: TerminalPanelProps) {
         initial={{ opacity: 0, y: 16 }}
         animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
         transition={{ duration: 0.45, ease: 'easeOut' }}
-        className="w-full max-w-2xl rounded-xl overflow-hidden
+        className="relative z-10 w-full max-w-2xl rounded-xl overflow-hidden
                    border border-white/10 bg-[#0d0d1a] shadow-2xl"
       >
         {/* Terminal chrome — traffic-light dots + path */}
