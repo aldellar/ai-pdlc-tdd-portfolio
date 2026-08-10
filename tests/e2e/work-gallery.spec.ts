@@ -33,10 +33,10 @@ test.describe('S3 — WorkGallery terminal section', () => {
   // -------------------------------------------------------------------------
   // TC2 — correct number of terminal panels
   // -------------------------------------------------------------------------
-  test('panel-count — one terminal panel per work entry (3 panels)', async ({ page }) => {
+  test('panel-count — one terminal panel per work entry (4 panels)', async ({ page }) => {
     await waitForPage(page);
     const panels = page.locator('[data-testid="terminal-panel"]');
-    await expect(panels).toHaveCount(3);
+    await expect(panels).toHaveCount(4);
   });
 
   // -------------------------------------------------------------------------
@@ -45,8 +45,8 @@ test.describe('S3 — WorkGallery terminal section', () => {
   test('panel-logos — each terminal panel contains a company logo image', async ({ page }) => {
     await waitForPage(page);
     const logos = page.locator('[data-testid="terminal-panel"] [data-testid="company-logo"]');
-    await expect(logos).toHaveCount(3);
-    for (let i = 0; i < 3; i++) {
+    await expect(logos).toHaveCount(4);
+    for (let i = 0; i < 4; i++) {
       const alt = await logos.nth(i).getAttribute('alt');
       expect(alt).toBeTruthy();
     }
@@ -58,17 +58,19 @@ test.describe('S3 — WorkGallery terminal section', () => {
   test('terminal-chrome — each panel has terminal window chrome dots', async ({ page }) => {
     await waitForPage(page);
     const chromes = page.locator('[data-testid="terminal-chrome"]');
-    await expect(chromes).toHaveCount(3);
+    await expect(chromes).toHaveCount(4);
   });
 
   // -------------------------------------------------------------------------
   // TC5 — each panel shows the company name
   // -------------------------------------------------------------------------
-  test('company-names — IBM, What\'s The Move, and Lighthouse are visible', async ({ page }) => {
+  test('company-names — all four companies are visible', async ({ page }) => {
     await waitForPage(page);
-    await expect(page.locator('[data-testid="work-gallery-section"]').getByText('IBM').first()).toBeAttached();
-    await expect(page.locator('[data-testid="work-gallery-section"]').getByText("What's The Move").first()).toBeAttached();
-    await expect(page.locator('[data-testid="work-gallery-section"]').getByText('Lighthouse IT Consulting').first()).toBeAttached();
+    const section = page.locator('[data-testid="work-gallery-section"]');
+    await expect(section.getByText('The Bot Company').first()).toBeAttached();
+    await expect(section.getByText('IBM').first()).toBeAttached();
+    await expect(section.getByText("What's The Move").first()).toBeAttached();
+    await expect(section.getByText('Lighthouse IT Consulting').first()).toBeAttached();
   });
 
   // -------------------------------------------------------------------------
@@ -77,6 +79,7 @@ test.describe('S3 — WorkGallery terminal section', () => {
   test('role-titles — role titles are present in terminal panels', async ({ page }) => {
     await waitForPage(page);
     const section = page.locator('[data-testid="work-gallery-section"]');
+    await expect(section.getByText('R&D Operator').first()).toBeAttached();
     await expect(section.getByText('Software Engineer').first()).toBeAttached();
     await expect(section.getByText('Founding iOS Developer').first()).toBeAttached();
     await expect(section.getByText('Founder & Lead IT Consultant').first()).toBeAttached();

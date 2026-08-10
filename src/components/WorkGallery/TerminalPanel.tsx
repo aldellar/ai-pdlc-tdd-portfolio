@@ -97,7 +97,7 @@ export function TerminalPanel({ entry, index, isActive }: TerminalPanelProps) {
         <div className="text-center">
           <p className="text-white font-semibold text-sm leading-tight">{entry.company}</p>
           <p className="text-white/40 text-[10px] mt-1 uppercase tracking-widest font-mono">
-            {String(index + 1).padStart(2, '0')} / 03
+            {String(index + 1).padStart(2, '0')} / 04
           </p>
         </div>
       </div>

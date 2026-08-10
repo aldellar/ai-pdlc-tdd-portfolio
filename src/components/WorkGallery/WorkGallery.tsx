@@ -21,7 +21,7 @@ import { useState } from 'react';
 import { workHistory } from '@/lib/data';
 import { TerminalPanel } from './TerminalPanel';
 
-const N = workHistory.length; // 3
+const N = workHistory.length; // 4
 
 export function WorkGallery() {
   const containerRef = useRef<HTMLDivElement>(null);

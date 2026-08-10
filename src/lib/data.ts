@@ -92,7 +92,7 @@ export const workHistory: WorkEntry[] = [
       'Partnered directly with company founders to plan, scope, and iterate on core product features, ensuring alignment between business goals, technical feasibility, and user experience in a rapidly evolving startup environment.',
     ],
     logoSrc: '/logos/whats-the-move.webp',
-    url: 'https://wtmofficial.com/',
+    url: 'https://apps.apple.com/us/app/wtm-nightlife-discovery/id6754407875',
   },
   {
     company: 'Lighthouse IT Consulting',
@@ -110,6 +110,23 @@ export const workHistory: WorkEntry[] = [
     ],
     logoSrc: '/logos/lighthouse.png',
     url: 'https://www.linkedin.com/company/lighthouse-it-consulting/',
+  },
+  {
+    company: 'The Bot Company',
+    role: 'R&D Operator',
+    location: 'San Francisco, CA',
+    startDate: 'Feb 2026',
+    endDate: 'Jul 2026',
+    description:
+      'Operated and evaluated robotic systems under contract, conducting AI policy evaluations and supporting field testing.',
+    bullets: [
+      'Operated, tested, and evaluated robotic systems across various environments, collecting performance data and validating new releases.',
+      'Conducted AI policy evaluations, executed orchestrator workflows, applied minor policy corrections, and managed robot task metadata through internal tools.',
+      'Provided structured feedback to engineering teams based on real-world testing observations, supporting iterative improvements to system reliability.',
+      'Supported onsite and field testing while adhering to established SOPs, ensuring consistent and safe robot operation across environments.',
+    ],
+    logoSrc: '/logos/the-bot-company.jpeg',
+    url: 'https://www.thebotcompany.com',
   },
 ];
 
