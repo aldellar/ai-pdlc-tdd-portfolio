@@ -137,9 +137,55 @@ export const projects: Project[] = [
   {
     name: 'AI PDLC TDD Portfolio',
     description:
-      'This portfolio site — built using IBM Winning Products AI-PDLC methodology and strict TDD with Playwright and Vitest.',
-    imageSrc: '/projects/portfolio.png',
+      'This portfolio site — built using IBM Winning Products AI-PDLC methodology and strict TDD with Playwright and Vitest. Features a terminal-style work gallery, scroll-pinned horizontal sections, and a global hue-cycling canvas background.',
     tech: ['Next.js', 'TypeScript', 'Framer Motion', 'Tailwind CSS', 'Playwright', 'Vitest'],
     url: 'https://github.com/aldellar/ai-pdlc-tdd-portfolio',
+    hueA: 220,
+    hueB: 260,
+  },
+  {
+    name: 'TechPath AI',
+    description:
+      'AI-powered learning path generator that produces personalised roadmaps for developers. Takes a target role and skill level as input and returns a structured, resource-linked curriculum.',
+    tech: ['Python', 'OpenAI', 'React', 'TypeScript', 'Node.js'],
+    url: 'https://github.com/aldellar',
+    hueA: 160,
+    hueB: 200,
+  },
+  {
+    name: 'Distributed Key-Value Store',
+    description:
+      'A distributed key-value store built from scratch implementing consistent hashing, replication, and fault tolerance. Supports concurrent reads and writes across multiple nodes.',
+    tech: ['Go', 'Docker', 'Kubernetes'],
+    url: 'https://github.com/aldellar',
+    hueA: 30,
+    hueB: 60,
+  },
+  {
+    name: 'CollabSpace',
+    description:
+      'Real-time collaborative workspace application with live cursors, shared documents, and presence indicators. Built with operational transforms for conflict-free concurrent editing.',
+    tech: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'WebSockets'],
+    url: 'https://github.com/aldellar',
+    hueA: 280,
+    hueB: 320,
+  },
+  {
+    name: 'Cryptor',
+    description:
+      'A command-line encryption toolkit implementing AES-256, RSA, and ChaCha20 ciphers with a clean CLI interface. Supports file and stream encryption with key management utilities.',
+    tech: ['Python', 'Cryptography', 'CLI'],
+    url: 'https://github.com/aldellar',
+    hueA: 340,
+    hueB: 20,
+  },
+  {
+    name: 'Workout Logger',
+    description:
+      'Mobile-first workout tracking app with exercise history, PR tracking, and progressive overload suggestions. Syncs across devices with offline-first architecture.',
+    tech: ['Swift', 'SwiftUI', 'CoreData'],
+    url: 'https://github.com/aldellar',
+    hueA: 100,
+    hueB: 140,
   },
 ];

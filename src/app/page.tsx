@@ -16,6 +16,7 @@ import { LoadingScreen } from '@/components/LoadingScreen/LoadingScreen';
 import { Hero } from '@/components/Hero/Hero';
 import { WorkGallery } from '@/components/WorkGallery/WorkGallery';
 import { PageBackground } from '@/components/PageBackground/PageBackground';
+import { Projects } from '@/components/Projects/Projects';
 
 export default function Home() {
   const [loaded,   setLoaded]   = useState(false);
@@ -38,6 +39,7 @@ export default function Home() {
       >
         <Hero scrambleTrigger={scramble} />
         <WorkGallery />
+        <Projects />
       </main>
     </>
   );

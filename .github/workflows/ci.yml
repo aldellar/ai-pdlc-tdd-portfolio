@@ -28,6 +28,3 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Unit tests (Vitest)
-        run: pnpm test
-

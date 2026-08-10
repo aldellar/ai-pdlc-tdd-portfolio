@@ -28,8 +28,9 @@ export interface WorkEntry {
 export interface Project {
   name: string;
   description: string;
-  imageSrc: string;
-  /** null / undefined for non-tech projects */
   tech?: string[];
   url: string;
+  /** Gradient hue stops for the splash behind the card */
+  hueA: number;
+  hueB: number;
 }
