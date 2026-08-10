@@ -64,8 +64,8 @@ export function WorkGallery() {
         style={{ height: `${N * 100}vh` }}
         className="relative"
       >
-        {/* Sticky viewport pin */}
-        <div className="sticky top-0 h-screen overflow-hidden">
+        {/* Sticky viewport pin — no overflow-hidden so top fade isn't clipped */}
+        <div className="sticky top-0 h-screen">
 
           {/* Horizontal panel strip */}
           <motion.div
