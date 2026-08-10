@@ -20,6 +20,7 @@ import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-mot
 import { useState } from 'react';
 import { workHistory } from '@/lib/data';
 import { TerminalPanel } from './TerminalPanel';
+import { GalleryBackground } from './GalleryBackground';
 
 const N = workHistory.length; // 3
 
@@ -69,10 +70,12 @@ export function WorkGallery() {
       <div
         ref={containerRef}
         style={{ height: `${N * 100}vh` }}
-        className="relative"
+        className="relative bg-[#060612]"
       >
         {/* Sticky viewport pin */}
-        <div className="sticky top-0 h-screen overflow-hidden">
+        <div className="sticky top-0 h-screen overflow-hidden bg-[#060612]">
+          {/* Animated colour orb background */}
+          <GalleryBackground />
           {/* Horizontal panel strip */}
           <motion.div
             style={{ x }}
