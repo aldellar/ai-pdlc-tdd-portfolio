@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * InfoGrid — 3 rows × 2 columns identity / contact tiles
  *
@@ -16,6 +18,8 @@ interface Tile {
   label: string;
   value: string;
   href?: string;
+  /** If set, clicking smoothly scrolls to the element with this id */
+  scrollTo?: string;
   testId: string;
 }
 
@@ -28,15 +32,17 @@ const TILES: Tile[] = [
     testId: 'work',
   },
   {
-    emoji: '🎓',
-    label: 'Education',
-    value: identity.degree,
-    testId: 'education',
+    emoji: '🐙',
+    label: 'GitHub',
+    value: 'aldellar',
+    href: 'https://github.com/aldellar',
+    testId: 'github',
   },
   {
     emoji: '⚡',
     label: 'Experience',
     value: identity.experience,
+    scrollTo: 'work-gallery',
     testId: 'experience',
   },
   {
@@ -92,6 +98,20 @@ export function InfoGrid() {
             </div>
           </div>
         );
+
+        if (tile.scrollTo) {
+          const id = tile.scrollTo;
+          return (
+            <button
+              key={tile.testId}
+              data-testid={`info-tile-${tile.testId}`}
+              onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })}
+              className="text-left hover:opacity-70 transition-opacity duration-150 cursor-pointer"
+            >
+              {inner}
+            </button>
+          );
+        }
 
         if (tile.href) {
           return (

@@ -53,6 +53,7 @@ export function WorkGallery() {
 
   return (
     <section
+      id="work-gallery"
       aria-label="Work experience gallery"
       data-testid="work-gallery-section"
       className="relative"
