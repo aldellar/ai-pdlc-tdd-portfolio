@@ -79,6 +79,12 @@ export function PageBackground() {
 
     let t = 0;
 
+    // Total scrollable height — used to normalise scroll position to 0–1
+    function getScrollRatio() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      return maxScroll > 0 ? window.scrollY / maxScroll : 0;
+    }
+
     function draw() {
       if (!canvas || !ctx) return;
       const W   = canvas.width;
@@ -90,6 +96,9 @@ export function PageBackground() {
       ctx.fillRect(0, 0, W, H);
 
       t += prefersReduced ? 0.0003 : 0.0022;
+
+      // Scroll-driven hue shift — 0 at top, +180° at bottom of page
+      const scrollHueShift = getScrollRatio() * 180;
 
       const mx          = mouseRef.current.x;
       const my          = mouseRef.current.y;
@@ -120,8 +129,8 @@ export function PageBackground() {
         orb.x += (orb.tx - orb.x) * orb.speed;
         orb.y += (orb.ty - orb.y) * orb.speed;
 
-        // Slowly rotate hue
-        const currentHue = (orb.hue + t * orb.hueSpeed * 60) % 360;
+        // Time-based hue rotation + scroll-driven shift
+        const currentHue = (orb.hue + t * orb.hueSpeed * 60 + scrollHueShift) % 360;
 
         const px = orb.x * W;
         const py = orb.y * H;
