@@ -14,7 +14,6 @@ import { ScrambleText } from './ScrambleText';
 import { TechTicker } from './TechTicker';
 import { PhotoTicker } from './PhotoTicker';
 import { InfoGrid } from './InfoGrid';
-import { MagneticBackground } from './MagneticBackground';
 import { SumiBackground } from './SumiBackground';
 
 interface HeroProps {
@@ -27,11 +26,9 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
     <section
       data-testid="hero-section"
       aria-label="Hero"
-      className="relative w-full overflow-hidden bg-[#060612]"
+      className="relative w-full"
     >
-      {/* Layer 0 — colour orbs */}
-      <MagneticBackground />
-      {/* Layer 1 — white sumi-e ink particles */}
+      {/* Sumi-e ink particles sit above the global PageBackground */}
       <SumiBackground />
 
       {/* 1 — Name */}
@@ -101,7 +98,7 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
       </div>
 
       {/* 5 — 3×2 info grid — width matched to the name heading */}
-      <div className="relative z-10 px-6 pt-6 pb-8 max-w-4xl mx-auto w-full">
+      <div className="relative z-10 px-6 pt-6 pb-16 max-w-4xl mx-auto w-full">
         <InfoGrid />
       </div>
 

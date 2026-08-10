@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { LoadingScreen } from '@/components/LoadingScreen/LoadingScreen';
 import { Hero } from '@/components/Hero/Hero';
 import { WorkGallery } from '@/components/WorkGallery/WorkGallery';
+import { PageBackground } from '@/components/PageBackground/PageBackground';
 
 export default function Home() {
   const [loaded,   setLoaded]   = useState(false);
@@ -29,6 +30,7 @@ export default function Home() {
           onExitComplete={() => setLoaded(true)}
         />
       )}
+      <PageBackground />
       <main
         id="main-content"
         tabIndex={-1}

@@ -20,7 +20,6 @@ import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-mot
 import { useState } from 'react';
 import { workHistory } from '@/lib/data';
 import { TerminalPanel } from './TerminalPanel';
-import { GalleryBackground } from './GalleryBackground';
 
 const N = workHistory.length; // 3
 
@@ -56,18 +55,17 @@ export function WorkGallery() {
     <section
       aria-label="Work experience gallery"
       data-testid="work-gallery-section"
-      className="relative bg-[#060612]"
+      className="relative"
     >
       {/* Scroll container — N * 100vh tall */}
       <div
         ref={containerRef}
         style={{ height: `${N * 100}vh` }}
-        className="relative bg-[#060612]"
+        className="relative"
       >
         {/* Sticky viewport pin */}
-        <div className="sticky top-0 h-screen overflow-hidden bg-[#060612]">
-          {/* Animated colour orb background */}
-          <GalleryBackground />
+        <div className="sticky top-0 h-screen overflow-hidden">
+
           {/* Horizontal panel strip */}
           <motion.div
             style={{ x }}
