@@ -16,9 +16,13 @@ export interface WorkEntry {
   role: string;
   startDate: string;
   endDate: string;
+  /** Short summary sentence shown in the InfoGrid */
   description: string;
+  /** Bullet points shown in the full WorkHistory section */
+  bullets: string[];
   logoSrc: string;
   url: string;
+  location: string;
 }
 
 export interface Project {

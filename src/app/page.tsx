@@ -6,13 +6,15 @@
  * Assembles the single scrolling page:
  *   1. LoadingScreen — exits before content is visible
  *   2. Hero          — S1 identity section
+ *   3. WorkHistory   — S2 experience section (scroll-pinning)
  *
- * S2 (About + WorkHistory) and S3 (Projects) are added in subsequent sprints.
+ * S3 (Projects) is added in a subsequent sprint.
  */
 
 import { useState } from 'react';
 import { LoadingScreen } from '@/components/LoadingScreen/LoadingScreen';
 import { Hero } from '@/components/Hero/Hero';
+import { WorkGallery } from '@/components/WorkGallery/WorkGallery';
 
 export default function Home() {
   const [loaded,   setLoaded]   = useState(false);
@@ -33,6 +35,7 @@ export default function Home() {
         aria-hidden={!loaded ? 'true' : undefined}
       >
         <Hero scrambleTrigger={scramble} />
+        <WorkGallery />
       </main>
     </>
   );

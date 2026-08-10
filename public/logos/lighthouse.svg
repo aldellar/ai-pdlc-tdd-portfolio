@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="Lighthouse IT Consulting">
+  <!-- Lighthouse tower -->
+  <rect x="34" y="28" width="12" height="36" rx="2" fill="#f59e0b"/>
+  <!-- Tower top / lantern room -->
+  <rect x="30" y="22" width="20" height="8"  rx="2" fill="#f59e0b"/>
+  <!-- Beacon light rays -->
+  <line x1="40" y1="20" x2="40" y2="8"  stroke="#fcd34d" stroke-width="3" stroke-linecap="round"/>
+  <line x1="40" y1="20" x2="28" y2="10" stroke="#fcd34d" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <line x1="40" y1="20" x2="52" y2="10" stroke="#fcd34d" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+  <line x1="40" y1="20" x2="20" y2="16" stroke="#fcd34d" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  <line x1="40" y1="20" x2="60" y2="16" stroke="#fcd34d" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+  <!-- Base / ground -->
+  <rect x="26" y="62" width="28" height="6"  rx="2" fill="#f59e0b"/>
+  <!-- Water waves -->
+  <path d="M12 72 Q20 68 28 72 Q36 76 44 72 Q52 68 60 72 Q68 76 68 72" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

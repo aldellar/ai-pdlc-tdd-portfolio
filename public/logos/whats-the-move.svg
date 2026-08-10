@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-label="What's The Move">
+  <!-- Location pin / compass icon -->
+  <circle cx="40" cy="32" r="24" fill="none" stroke="#7c5cd8" stroke-width="4"/>
+  <circle cx="40" cy="32" r="8"  fill="#7c5cd8"/>
+  <!-- pin tail -->
+  <path d="M 33 52 Q 40 72 47 52" fill="#7c5cd8"/>
+  <!-- cardinal ticks -->
+  <line x1="40" y1="10" x2="40" y2="16" stroke="#7c5cd8" stroke-width="3" stroke-linecap="round"/>
+  <line x1="40" y1="48" x2="40" y2="54" stroke="#7c5cd8" stroke-width="3" stroke-linecap="round"/>
+  <line x1="18" y1="32" x2="24" y2="32" stroke="#7c5cd8" stroke-width="3" stroke-linecap="round"/>
+  <line x1="56" y1="32" x2="62" y2="32" stroke="#7c5cd8" stroke-width="3" stroke-linecap="round"/>
+</svg>
