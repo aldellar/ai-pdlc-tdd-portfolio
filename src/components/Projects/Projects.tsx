@@ -25,6 +25,7 @@ const folderVariants: Variants = {
 export function Projects() {
   return (
     <section
+      id="projects-section"
       aria-label="Personal projects"
       data-testid="projects-section"
       className="relative w-full py-32"

@@ -53,11 +53,11 @@ const TILES: Tile[] = [
     testId: 'work',
   },
   {
-    emoji: '🐙',
-    label: 'GitHub',
-    value: 'aldellar',
-    href: 'https://github.com/aldellar',
-    testId: 'github',
+    emoji: '🗂️',
+    label: 'Projects',
+    value: 'Personal Projects',
+    scrollTo: 'projects-section',
+    testId: 'projects',
   },
   {
     emoji: '⚡',
@@ -81,11 +81,11 @@ const TILES: Tile[] = [
     testId: 'linkedin',
   },
   {
-    emoji: '📸',
-    label: 'Instagram',
-    value: '@d3llaringa',
-    href: identity.instagram,
-    testId: 'instagram',
+    emoji: '📄',
+    label: 'Résumé',
+    value: 'August 2026',
+    href: '/resume.pdf',
+    testId: 'resume',
   },
 ];
 
