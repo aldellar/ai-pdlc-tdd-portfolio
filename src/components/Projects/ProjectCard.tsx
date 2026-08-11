@@ -30,7 +30,7 @@
  */
 
 import { motion, useAnimation } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import type { Project } from '@/lib/types';
 
 // ─── Fixed layout constants ───────────────────────────────────────────────────
@@ -114,8 +114,8 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
   const cardRef    = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [cardH, setCardH] = useState(0);
-  const hasAnimated = useRef(false);
-  const controls    = useAnimation();
+  const hasScrolled = useRef(false);  // true once IntersectionObserver fires
+  const controls    = useAnimation(); // drives card y
 
   useEffect(() => {
     const el = cardRef.current;
@@ -135,8 +135,8 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
+        if (entry.isIntersecting && !hasScrolled.current) {
+          hasScrolled.current = true;
           controls.start({
             y: -cardH,
             transition: { type: 'spring', bounce: 0.28, duration: 1.0 },
@@ -147,6 +147,25 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     );
     io.observe(el);
     return () => io.disconnect();
+  }, [cardH, controls]);
+
+  // Hover: card springs out of the folder. Folder body never moves.
+  const onMouseEnter = useCallback(() => {
+    if (cardH === 0) return;
+    const target = hasScrolled.current ? -cardH - 12 : -cardH;
+    controls.start({
+      y: target,
+      transition: { type: 'spring', stiffness: 320, damping: 26 },
+    });
+  }, [cardH, controls]);
+
+  const onMouseLeave = useCallback(() => {
+    if (cardH === 0) return;
+    const target = hasScrolled.current ? -cardH : 0;
+    controls.start({
+      y: target,
+      transition: { type: 'spring', stiffness: 280, damping: 30 },
+    });
   }, [cardH, controls]);
 
   // Word-wrap description → JSDoc comment lines ≤50 chars
@@ -169,25 +188,27 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     <div
       ref={wrapperRef}
       data-testid="project-card-container"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       style={{
         position: 'relative',
         height: wrapperH,
         marginBottom: 40,
+        cursor: 'pointer',
         // NO overflow:hidden — the sky gap above the folder must stay visible
       }}
     >
-      {/* ── Folder tab — left-aligned notch, protrudes above the body ─────────── */}
+      {/* ── Folder tab — left-aligned notch ──────────────────────────────────── */}
       <div style={{
         position: 'absolute',
-        top: cardH,          // sits flush on top of the body
+        top: cardH,
         left: 0,
-        width: 160,          // narrower than full width — real folder tab shape
+        width: 160,
         height: TAB_H,
         background: tabBg,
         borderRadius: '8px 12px 0 0',
         display: 'flex', alignItems: 'center', gap: 7,
         paddingLeft: 12,
-        // Inner highlight on top/left edges — the lit face of the tab
         boxShadow: [
           'inset 0 2px 0 rgba(255,255,255,0.35)',
           'inset 2px 0 0 rgba(255,255,255,0.15)',
@@ -210,22 +231,23 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         }}>{filename}</span>
       </div>
 
-      {/* ── Folder body — full-width paper slab, sits ON TOP of card (z:4) ─────── */}
-      <div style={{
-        position: 'absolute',
-        top: cardH + TAB_H,
-        left: 0, right: 0,
-        height: cardH > 0 ? cardH : 40,
-        background: bodyBg,
-        borderRadius: '0 6px 0 0',  // right-top radius — tab is only on the left
-        // Top highlight (lit edge) + ambient drop shadow
-        boxShadow: [
-          'inset 0 2px 0 rgba(255,255,255,0.22)',
-          'inset -2px 0 0 rgba(0,0,0,0.08)',
-          `0 8px 32px ${shadowC}80`,
-        ].join(', '),
-        zIndex: 4,
-      }} />
+      {/* ── Folder body — static, never moves ────────────────────────────────── */}
+      <div
+        style={{
+          position: 'absolute',
+          top: cardH + TAB_H,
+          left: 0, right: 0,
+          height: cardH > 0 ? cardH : 40,
+          background: bodyBg,
+          borderRadius: '0 6px 0 0',
+          boxShadow: [
+            'inset 0 2px 0 rgba(255,255,255,0.22)',
+            'inset 2px 0 0 rgba(0,0,0,0.08)',
+            `0 8px 32px ${shadowC}80`,
+          ].join(', '),
+          zIndex: 4,
+        }}
+      />
 
       {/* ── Folder bottom fold — darker strip, the folded paper edge ─────────────── */}
       <div style={{
