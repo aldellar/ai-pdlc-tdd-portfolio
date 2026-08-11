@@ -64,7 +64,7 @@ export function Projects() {
             variants={folderVariants}
             initial="offscreen"
             whileInView="onscreen"
-            viewport={{ amount: 0.2, once: true }}
+            viewport={{ amount: 0.2 }}
           >
             <ProjectCard project={project} index={i} />
           </motion.div>

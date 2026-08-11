@@ -114,8 +114,8 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
   const cardRef    = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [cardH, setCardH] = useState(0);
-  const hasScrolled = useRef(false);  // true once IntersectionObserver fires
-  const controls    = useAnimation(); // drives card y
+  const isVisible  = useRef(false);  // tracks live intersection state
+  const controls   = useAnimation(); // drives card y
 
   useEffect(() => {
     const el = cardRef.current;
@@ -128,18 +128,24 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     return () => ro.disconnect();
   }, []);
 
-  // Once cardH is known, attach IntersectionObserver and fire the spring
+  // Re-attach IntersectionObserver whenever cardH is measured.
+  // Fires on every enter/exit — springs out when visible, tucks in when not.
   useEffect(() => {
     if (cardH === 0) return;
     const el = wrapperRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasScrolled.current) {
-          hasScrolled.current = true;
+        isVisible.current = entry.isIntersecting;
+        if (entry.isIntersecting) {
           controls.start({
             y: -cardH,
             transition: { type: 'spring', bounce: 0.28, duration: 1.0 },
+          });
+        } else {
+          controls.start({
+            y: 0,
+            transition: { type: 'spring', stiffness: 260, damping: 32 },
           });
         }
       },
@@ -149,10 +155,10 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     return () => io.disconnect();
   }, [cardH, controls]);
 
-  // Hover: card springs out of the folder. Folder body never moves.
+  // Hover: card springs out/lifts. Folder body never moves.
   const onMouseEnter = useCallback(() => {
     if (cardH === 0) return;
-    const target = hasScrolled.current ? -cardH - 12 : -cardH;
+    const target = isVisible.current ? -cardH - 12 : -cardH;
     controls.start({
       y: target,
       transition: { type: 'spring', stiffness: 320, damping: 26 },
@@ -161,7 +167,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
 
   const onMouseLeave = useCallback(() => {
     if (cardH === 0) return;
-    const target = hasScrolled.current ? -cardH : 0;
+    const target = isVisible.current ? -cardH : 0;
     controls.start({
       y: target,
       transition: { type: 'spring', stiffness: 280, damping: 30 },
