@@ -31,8 +31,22 @@ export function Projects() {
     >
       {/* Section label */}
       <div className="px-8 md:px-16 pb-16">
-        <p className="text-white/40 text-xs uppercase tracking-[0.25em] mb-3">03 — Projects</p>
-        <h2 className="text-4xl md:text-5xl font-bold text-white">Personal Projects</h2>
+        {/* inline-block wrapper shrinks to text width so the scrim hugs the lines */}
+        <div className="relative inline-block" style={{ isolation: 'isolate' }}>
+          <div
+            aria-hidden="true"
+            className="absolute pointer-events-none"
+            style={{
+              top: '-0.5em', bottom: '-0.8em',
+              left: '-1.2em', right: '-1.2em',
+              zIndex: 0,
+              background: 'radial-gradient(ellipse 100% 100% at 50% 50%, rgba(0,0,0,0.60) 20%, rgba(0,0,0,0.30) 60%, transparent 100%)',
+              filter: 'blur(18px)',
+            }}
+          />
+          <p className="relative z-10 text-white/40 text-xs uppercase tracking-[0.25em] mb-3">03 — Projects</p>
+          <h2 className="relative z-10 text-4xl md:text-5xl font-bold text-white">Personal Projects</h2>
+        </div>
       </div>
 
       {/* Folder stack */}
