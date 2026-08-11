@@ -1,213 +1,308 @@
 'use client';
 
 /**
- * ProjectCard — scroll-triggered spring entry + hover flip.
+ * ProjectCard — per-project rainbow folder that fully encases the card.
  *
- * Design: wide landscape card (not portrait like the reference).
- *   Front — large project index, name, tech pills, coloured left accent bar
- *   Back  — description on a tinted gradient background, "View →" label
+ * Geometry:
  *
- * The coloured splash sits OUTSIDE the overflow:hidden container so it
- * is always visible behind the card.
+ *   The folder body is exactly as tall as the card it contains.
+ *   On scroll-in, the card springs fully out above the folder (y: cardH → 0).
+ *   The folder tab, body, and lip are always flush — nothing detaches.
  *
- * Spring fix: the scroll trigger (initial/whileInView) and the flip
- * (whileHover) both live on the same motion element using animate prop
- * controlled by a hover state — no conflicting initial overrides.
+ *   outer wrapper  height = cardH + TAB_H + cardH + LIP_H
+ *                         ↑ top half: "sky" the card pops into
+ *                         ↑ bottom half: the folder body
+ *
+ *   [TAB]   absolute, top = cardH
+ *   [BODY]  absolute, top = cardH + TAB_H, height = cardH, overflow:hidden
+ *   [LIP]   absolute, top = cardH + TAB_H + cardH
+ *   [CARD]  absolute, top = cardH
+ *           start:   y = cardH   (fully inside folder body)
+ *           arrived: y = 0       (fully above folder, card completely visible)
+ *
+ * cardH is measured via ResizeObserver. Animation is driven by useAnimation()
+ * with its own IntersectionObserver so the trigger fires AFTER cardH is known.
  */
 
-import { motion, useAnimation, useInView } from 'framer-motion';
-import { useRef, useEffect, useState } from 'react';
+import { motion, useAnimation } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
 import type { Project } from '@/lib/types';
 
-const hue = (h: number) => `hsl(${h}, 85%, 58%)`;
+// ─── Fixed layout constants ───────────────────────────────────────────────────
+const TAB_H = 26;   // folder tab height
+const LIP_H = 13;   // folder lip height
 
-interface ProjectCardProps {
-  project: Project;
-  index: number;
+// ─── Colour helpers ───────────────────────────────────────────────────────────
+const hue             = (h: number) => `hsl(${h}, 80%, 60%)`;
+const hueD            = (h: number) => `hsl(${h}, 55%, 28%)`;
+const folderBodyLight = (h: number) => `hsl(${h}, 58%, 54%)`;
+const folderBodyDark  = (h: number) => `hsl(${h}, 52%, 40%)`;
+const folderTabLight  = (h: number) => `hsl(${h}, 62%, 64%)`;
+const folderLip       = (h: number) => `hsl(${h}, 50%, 32%)`;
+
+function toFilename(name: string) {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.ts';
 }
 
+// ─── Syntax tokens ────────────────────────────────────────────────────────────
+const syn = {
+  comment: 'rgba(148,163,184,0.7)',
+  keyword: '#c792ea',
+  string:  '#c3e88d',
+  module:  '#82aaff',
+  punct:   'rgba(255,255,255,0.3)',
+};
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+function CodeLine({ n, accent, children }: { n: number; accent: string; children: React.ReactNode }) {
+  return (
+    <div style={{ display: 'flex', minHeight: 20 }}>
+      <span style={{
+        width: 30, flexShrink: 0, textAlign: 'right', paddingRight: 12,
+        color: accent, fontSize: 10, fontFamily: 'monospace',
+        lineHeight: '20px', userSelect: 'none', opacity: 0.35,
+      }}>{n}</span>
+      <span style={{ flex: 1, fontSize: 11, fontFamily: 'monospace', lineHeight: '20px' }}>
+        {children}
+      </span>
+    </div>
+  );
+}
+
+function WindowDots({ accent }: { accent: string }) {
+  return (
+    <div data-testid="titlebar-dots" style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+      <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#ff5f57' }} />
+      <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#febc2e' }} />
+      <div style={{ width: 9, height: 9, borderRadius: '50%', background: accent }} />
+    </div>
+  );
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+interface ProjectCardProps { project: Project; index: number; }
+
 export function ProjectCard({ project, index }: ProjectCardProps) {
-  const ref            = useRef<HTMLDivElement>(null);
-  const isInView       = useInView(ref, { amount: 0.3, once: true });
-  const controls       = useAnimation();
-  const [flipped, setFlipped] = useState(false);
+  const accentA  = hue(project.hueA);
+  const accentB  = hue(project.hueB);
+  const gutterBg = hueD(project.hueA);
+  const filename = toFilename(project.name);
 
-  // Spring up once the card enters the viewport
+  const tabBg  = `linear-gradient(to bottom, ${folderTabLight(project.hueA)}, ${folderBodyLight(project.hueA)})`;
+  const bodyBg = `linear-gradient(175deg, ${folderBodyLight(project.hueA)} 0%, ${folderBodyDark(project.hueA)} 100%)`;
+  const lipBg  = folderLip(project.hueA);
+
+  // ── Measure card height so folder body is the exact right size ───────────
+  const cardRef     = useRef<HTMLDivElement>(null);
+  const wrapperRef  = useRef<HTMLDivElement>(null);
+  const [cardH, setCardH] = useState(240); // reasonable SSR fallback
+  const hasAnimated = useRef(false);
+  const controls    = useAnimation();
+
+  // Step 1: measure the card as soon as it renders / resizes
   useEffect(() => {
-    if (isInView) {
-      controls.start({
-        y: 0,
-        opacity: 1,
-        transition: { type: 'spring', bounce: 0.35, duration: 0.9, delay: index * 0.05 },
-      });
-    }
-  }, [isInView, controls, index]);
+    const el = cardRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      const h = entries[0]?.contentRect.height;
+      if (h) setCardH(h);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
-  const splashBg = `linear-gradient(135deg, ${hue(project.hueA)}, ${hue(project.hueB)})`;
-  const accentBar = `linear-gradient(to bottom, ${hue(project.hueA)}, ${hue(project.hueB)})`;
+  // Step 2: start card at the measured y offset whenever cardH is known
+  useEffect(() => {
+    controls.set({ y: cardH });
+  }, [cardH, controls]);
+
+  // Step 3: IntersectionObserver fires AFTER cardH is set — triggers the spring
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          controls.start({
+            y: 0,
+            transition: { type: 'spring', bounce: 0.3, duration: 1.0 },
+          });
+        }
+      },
+      { threshold: 0.15 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [controls]);
+
+  // Word-wrap description → JSDoc comment lines ≤50 chars
+  const commentLines: string[] = [];
+  let buf = '';
+  for (const word of project.description.split(' ')) {
+    if ((buf + ' ' + word).trim().length > 50) { commentLines.push(buf.trim()); buf = word; }
+    else buf = (buf + ' ' + word).trim();
+  }
+  if (buf) commentLines.push(buf.trim());
+  const importStart = commentLines.length + 5;
+
+  // Outer wrapper height = sky space (cardH) + tab + folder body (cardH) + lip
+  const wrapperH = cardH + TAB_H + cardH + LIP_H;
 
   return (
-    // Outer ref div — scroll trigger target, no overflow clip
     <div
-      ref={ref}
+      ref={wrapperRef}
       data-testid="project-card-container"
-      style={{ position: 'relative', marginBottom: -100, paddingTop: 16 }}
+      style={{
+        position: 'relative',
+        height: wrapperH,
+        marginBottom: 40,
+      }}
     >
-      {/* Splash blob — sits behind card, not clipped */}
-      <div
-        aria-hidden="true"
+      {/* ── Folder tab ─────────────────────────────────────────────────────── */}
+      <div style={{
+        position: 'absolute',
+        top: cardH,
+        left: 14,
+        height: TAB_H,
+        paddingLeft: 10, paddingRight: 14,
+        background: tabBg,
+        borderRadius: '7px 7px 0 0',
+        display: 'flex', alignItems: 'center', gap: 5,
+        boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.2)',
+        whiteSpace: 'nowrap',
+        zIndex: 2,
+      }}>
+        <svg width="9" height="11" viewBox="0 0 10 12" fill="none" aria-hidden="true">
+          <path d="M1 0h5.5L10 3.5V11a1 1 0 01-1 1H1a1 1 0 01-1-1V1a1 1 0 011-1z" fill="rgba(0,0,0,0.2)" />
+          <path d="M5.5 0L10 3.5H6.5A1 1 0 015.5 2.5V0z" fill="rgba(0,0,0,0.15)" />
+        </svg>
+        <span style={{
+          fontFamily: 'monospace', fontSize: 10,
+          color: 'rgba(0,0,0,0.52)', letterSpacing: '0.02em', fontWeight: 600,
+        }}>{filename}</span>
+      </div>
+
+      {/* ── Folder body — overflow:hidden fully contains the card ──────────── */}
+      <div style={{
+        position: 'absolute',
+        top: cardH + TAB_H,
+        left: 0, right: 0,
+        height: cardH,
+        background: bodyBg,
+        borderRadius: '0 6px 0 0',
+        overflow: 'hidden',
+        boxShadow: 'inset 0 3px 0 rgba(255,255,255,0.18), 0 2px 8px rgba(0,0,0,0.25)',
+        zIndex: 1,
+      }} />
+
+      {/* ── Folder lip — flush below body ──────────────────────────────────── */}
+      <div style={{
+        position: 'absolute',
+        top: cardH + TAB_H + cardH,
+        left: 4, right: 4,
+        height: LIP_H,
+        background: lipBg,
+        borderRadius: '0 0 6px 6px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+        zIndex: 1,
+      }} />
+
+      {/* ── Card — springs out above folder on scroll ──────────────────────── */}
+      <motion.div
+        ref={cardRef}
+        animate={controls}
         style={{
           position: 'absolute',
-          inset: '-20px -30px',
-          background: splashBg,
-          borderRadius: 32,
-          opacity: 0.18,
-          filter: 'blur(24px)',
-          zIndex: 0,
+          top: cardH,
+          left: 0, right: 0,
+          borderRadius: 10,
+          overflow: 'hidden',
+          background: '#0d1117',
+          boxShadow: [
+            '0 0 0 1px rgba(255,255,255,0.07)',
+            '0 16px 40px rgba(0,0,0,0.65)',
+            '0 4px 12px rgba(0,0,0,0.4)',
+          ].join(', '),
+          zIndex: 3,
         }}
-      />
-
-      {/* Spring + flip wrapper */}
-      <motion.div
-        style={{
-          position: 'relative',
-          zIndex: 1,
-          perspective: 1200,
-          width: '100%',
-          height: 200,
-        }}
-        initial={{ y: 120, opacity: 0 }}
-        animate={controls}
-        onHoverStart={() => setFlipped(true)}
-        onHoverEnd={() => setFlipped(false)}
       >
-        {/* Flip inner — rotates on hover */}
-        <motion.a
-          data-testid="project-card"
-          href={project.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          animate={{ rotateY: flipped ? 180 : 0 }}
-          transition={{ duration: 0.55, ease: 'easeInOut' }}
+        {/* Titlebar */}
+        <div
+          data-testid="card-front"
           style={{
-            display: 'block',
-            width: '100%',
-            height: '100%',
-            transformStyle: 'preserve-3d',
-            position: 'relative',
-            textDecoration: 'none',
-            borderRadius: 16,
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '9px 14px',
+            background: '#161b22',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
           }}
         >
-          {/* ── FRONT ── */}
-          <div
-            data-testid="card-front"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              borderRadius: 16,
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-              background: 'rgba(13,13,26,0.92)',
-              border: '1px solid rgba(255,255,255,0.07)',
-              backdropFilter: 'blur(12px)',
-              display: 'flex',
-              alignItems: 'stretch',
-              overflow: 'hidden',
-            }}
-          >
-            {/* Left accent bar */}
-            <div style={{ width: 4, flexShrink: 0, background: accentBar, borderRadius: '16px 0 0 16px' }} />
+          <WindowDots accent={accentA} />
+          <span style={{
+            fontFamily: 'monospace', fontSize: 11,
+            color: 'rgba(255,255,255,0.38)', letterSpacing: '0.03em', marginLeft: 4,
+          }}>{filename}</span>
+          <span style={{
+            marginLeft: 'auto', fontFamily: 'monospace', fontSize: 10,
+            color: accentA, letterSpacing: '0.12em', opacity: 0.6,
+          }}>{String(index + 1).padStart(2, '0')}</span>
+        </div>
 
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px 24px', gap: 14 }}>
-              {/* Index + name row */}
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-                <span style={{
-                  fontFamily: 'monospace',
-                  fontSize: 11,
-                  color: hue(project.hueA),
-                  letterSpacing: '0.12em',
-                  opacity: 0.8,
-                  flexShrink: 0,
-                }}>
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h3 style={{
-                  color: '#fff',
-                  fontSize: 18,
-                  fontWeight: 700,
-                  margin: 0,
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1.2,
-                }}>
-                  {project.name}
-                </h3>
-              </div>
+        {/* Code body */}
+        <div data-testid="card-back" style={{ display: 'flex' }}>
+          <div style={{ width: 30, flexShrink: 0, background: gutterBg, opacity: 0.18, alignSelf: 'stretch' }} />
+          <div style={{ flex: 1, padding: '12px 14px 16px 0', marginLeft: -30 }}>
 
-              {/* Tech pills */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                {project.tech?.map((t) => (
-                  <span
-                    key={t}
-                    data-testid="tech-pill"
-                    style={{
-                      fontSize: 10,
-                      fontFamily: 'monospace',
-                      color: 'rgba(255,255,255,0.6)',
-                      background: 'rgba(255,255,255,0.06)',
-                      border: '1px solid rgba(255,255,255,0.09)',
-                      borderRadius: 5,
-                      padding: '2px 8px',
-                      letterSpacing: '0.03em',
-                    }}
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
+            <CodeLine n={1} accent={accentA}>
+              <span style={{ color: syn.comment }}>{'// '}</span>
+              <span style={{ color: accentA, fontWeight: 700 }}>{project.name}</span>
+            </CodeLine>
+            <CodeLine n={2} accent={accentA}><span /></CodeLine>
+            <CodeLine n={3} accent={accentA}>
+              <span style={{ color: syn.comment }}>{'/**'}</span>
+            </CodeLine>
+            {commentLines.map((line, li) => (
+              <CodeLine key={li} n={4 + li} accent={accentA}>
+                <span style={{ color: syn.comment }}>{' * '}{line}</span>
+              </CodeLine>
+            ))}
+            <CodeLine n={4 + commentLines.length} accent={accentA}>
+              <span style={{ color: syn.comment }}>{' */'}</span>
+            </CodeLine>
+            <CodeLine n={importStart - 1} accent={accentA}><span /></CodeLine>
+            {project.tech?.map((t, ti) => (
+              <CodeLine key={t} n={importStart + ti} accent={accentA}>
+                <span style={{ color: syn.keyword }}>import </span>
+                <span style={{ color: syn.module }}>{t.toLowerCase().replace(/[^a-z0-9]/g, '')}</span>
+                <span style={{ color: syn.keyword }}> from </span>
+                <span style={{ color: syn.string }}>&apos;{t.toLowerCase().replace(/\s+/g, '-')}&apos;</span>
+                <span style={{ color: syn.punct }}>;</span>
+                <span data-testid="tech-pill" style={{ display: 'none' }}>{t}</span>
+              </CodeLine>
+            ))}
+            <CodeLine n={importStart + (project.tech?.length ?? 0)} accent={accentA}><span /></CodeLine>
+            <CodeLine n={importStart + (project.tech?.length ?? 0) + 1} accent={accentA}>
+              <span style={{ color: syn.keyword }}>export default </span>
+              <a
+                data-testid="project-card"
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: accentB, textDecoration: 'none',
+                  fontFamily: 'monospace', fontSize: 11,
+                  borderBottom: `1px solid ${accentB}44`,
+                }}
+                onMouseEnter={e => (e.currentTarget.style.borderBottomColor = accentB)}
+                onMouseLeave={e => (e.currentTarget.style.borderBottomColor = `${accentB}44`)}
+              >viewProject</a>
+              <span style={{ color: syn.punct }}>{'() // →'}</span>
+            </CodeLine>
 
-              {/* Hover hint */}
-              <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'monospace' }}>
-                hover to flip
-              </span>
-            </div>
           </div>
-
-          {/* ── BACK ── */}
-          <div
-            data-testid="card-back"
-            style={{
-              position: 'absolute',
-              inset: 0,
-              borderRadius: 16,
-              backfaceVisibility: 'hidden',
-              WebkitBackfaceVisibility: 'hidden',
-              transform: 'rotateY(180deg)',
-              background: `linear-gradient(135deg, ${hue(project.hueA)}18, ${hue(project.hueB)}18), rgba(13,13,26,0.95)`,
-              border: `1px solid ${hue(project.hueA)}30`,
-              backdropFilter: 'blur(12px)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              padding: '24px 28px',
-              gap: 16,
-            }}
-          >
-            <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: 13, lineHeight: 1.75, margin: 0 }}>
-              {project.description}
-            </p>
-            <span style={{
-              fontSize: 11,
-              fontFamily: 'monospace',
-              color: hue(project.hueB),
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-            }}>
-              view project →
-            </span>
-          </div>
-        </motion.a>
+        </div>
       </motion.div>
+
     </div>
   );
 }

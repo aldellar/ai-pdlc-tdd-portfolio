@@ -1,14 +1,26 @@
 'use client';
 
 /**
- * Projects — S3 scroll-triggered flip card section.
+ * Projects — S3 folder-per-project scroll section.
  *
- * Cards spring up from below as they enter the viewport (Motion.dev reference).
- * Each card flips on hover to reveal the project description on the back.
+ * Each project is wrapped in a motion.div with whileInView="onscreen" so
+ * ProjectCard's cardVariants inherit the animation state and the card springs
+ * out of its folder as it enters the viewport.
  */
 
+import { motion, type Variants } from 'framer-motion';
 import { projects } from '@/lib/data';
 import { ProjectCard } from './ProjectCard';
+
+// Subtle fade+lift for the whole folder unit entering the viewport
+const folderVariants: Variants = {
+  offscreen: { opacity: 0, y: 28 },
+  onscreen: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', bounce: 0.18, duration: 0.7 },
+  },
+};
 
 export function Projects() {
   return (
@@ -23,19 +35,25 @@ export function Projects() {
         <h2 className="text-4xl md:text-5xl font-bold text-white">Personal Projects</h2>
       </div>
 
-      {/* Card stack */}
+      {/* Folder stack */}
       <div
         style={{
           margin: '0 auto',
-          maxWidth: 600,
-          paddingBottom: 240,
+          maxWidth: 560,
+          padding: '60px 24px 120px',
           width: '100%',
-          paddingLeft: 24,
-          paddingRight: 24,
         }}
       >
         {projects.map((project, i) => (
-          <ProjectCard key={project.name} project={project} index={i} />
+          <motion.div
+            key={project.name}
+            variants={folderVariants}
+            initial="offscreen"
+            whileInView="onscreen"
+            viewport={{ amount: 0.2, once: true }}
+          >
+            <ProjectCard project={project} index={i} />
+          </motion.div>
         ))}
       </div>
     </section>
