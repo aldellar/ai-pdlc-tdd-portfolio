@@ -11,7 +11,28 @@
  * Each tile has an emoji icon on the left.
  */
 
+import { useEffect, useState } from 'react';
 import { identity } from '@/lib/data';
+
+// Earliest professional start date — What's The Move, Mar 2025
+const CAREER_START = new Date('2025-03-01T00:00:00');
+
+function calcYears(): number {
+  return (Date.now() - CAREER_START.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+}
+
+function titleFromYears(y: number): string {
+  if (y < 2)  return 'Junior Developer';
+  if (y < 5)  return 'Mid-level Developer';
+  if (y < 8)  return 'Senior Developer';
+  if (y < 12) return 'Staff Engineer';
+  return 'Principal Engineer';
+}
+
+function formatExp(): string {
+  const y = calcYears();
+  return `${titleFromYears(y)} — ${y.toFixed(2)} yrs`;
+}
 
 interface Tile {
   emoji: string;
@@ -41,7 +62,7 @@ const TILES: Tile[] = [
   {
     emoji: '⚡',
     label: 'Experience',
-    value: identity.experience,
+    value: '', // replaced by live value below
     scrollTo: 'work-gallery',
     testId: 'experience',
   },
@@ -69,6 +90,14 @@ const TILES: Tile[] = [
 ];
 
 export function InfoGrid() {
+  const [expLabel, setExpLabel] = useState(formatExp);
+
+  useEffect(() => {
+    // Update every second so the decimal ticks live
+    const id = setInterval(() => setExpLabel(formatExp()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <div
       data-testid="info-grid"
@@ -93,7 +122,7 @@ export function InfoGrid() {
                 {tile.label}
               </span>
               <span className="text-base font-semibold text-white leading-snug drop-shadow-sm">
-                {tile.value}
+                {tile.testId === 'experience' ? expLabel : tile.value}
               </span>
             </div>
           </div>

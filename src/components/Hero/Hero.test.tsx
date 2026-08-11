@@ -36,7 +36,8 @@ describe('S1 — AC1/2/3/4: identity text', () => {
 
   it('experience-level-is-present — renders experience level', () => {
     render(<Hero />);
-    expect(screen.getAllByText(identity.experience).length).toBeGreaterThan(0);
+    // Value is live-computed (e.g. "1.23 years") — check the label tile exists
+    expect(screen.getByTestId('info-tile-experience')).toBeTruthy();
   });
 });
 
