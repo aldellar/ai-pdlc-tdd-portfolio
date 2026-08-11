@@ -1,27 +1,32 @@
 'use client';
 
 /**
- * ProjectCard — per-project rainbow folder that fully encases the card.
+ * ProjectCard — per-project rainbow folder. Card starts inside the folder
+ * and springs upward into the sky gap above when scrolled into view.
  *
  * Geometry:
  *
- *   The folder body is exactly as tall as the card it contains.
- *   On scroll-in, the card springs fully out above the folder (y: cardH → 0).
- *   The folder tab, body, and lip are always flush — nothing detaches.
+ *   outer wrapper  height = cardH (sky gap) + TAB_H + cardH (folder body) + LIP_H
+ *                  no overflow:hidden — sky gap must be visible
  *
- *   outer wrapper  height = cardH + TAB_H + cardH + LIP_H
- *                         ↑ top half: "sky" the card pops into
- *                         ↑ bottom half: the folder body
+ *   [TAB]    absolute, top = cardH,            left=0 right=0
+ *   [BODY]   absolute, top = cardH + TAB_H,    height = cardH    ← decorative slab
+ *   [LIP]    absolute, top = cardH + TAB_H + cardH,  left=0 right=0
+ *   [CARD]   absolute, top = cardH + TAB_H,    zIndex = 3
+ *            initial:  y = 0    → card sits inside the folder body (body is on top, z=1 < z=3 …)
  *
- *   [TAB]   absolute, top = cardH
- *   [BODY]  absolute, top = cardH + TAB_H, height = cardH, overflow:hidden
- *   [LIP]   absolute, top = cardH + TAB_H + cardH
- *   [CARD]  absolute, top = cardH
- *           start:   y = cardH   (fully inside folder body)
- *           arrived: y = 0       (fully above folder, card completely visible)
+ * Wait — the folder body is z:1 and the card is z:3, so the card would always
+ * be on top even at y:0. The hiding mechanism is different:
  *
- * cardH is measured via ResizeObserver. Animation is driven by useAnimation()
- * with its own IntersectionObserver so the trigger fires AFTER cardH is known.
+ *   The CARD starts at top = cardH + TAB_H, y = 0 → visible OVER the folder body.
+ *   We need it UNDER. So:
+ *     - Folder body zIndex = 4  (covers the card when card is inside)
+ *     - Card        zIndex = 3
+ *     - Card animates y: 0 → -cardH  (moves above the folder body top edge)
+ *     - Once card top < folder body top, card is in sky gap, above all folder layers
+ *
+ * The folder body does NOT need overflow:hidden — it simply sits on top of
+ * the card (higher z-index) until the card translates above it.
  */
 
 import { motion, useAnimation } from 'framer-motion';
@@ -33,12 +38,15 @@ const TAB_H = 26;   // folder tab height
 const LIP_H = 13;   // folder lip height
 
 // ─── Colour helpers ───────────────────────────────────────────────────────────
-const hue             = (h: number) => `hsl(${h}, 80%, 60%)`;
-const hueD            = (h: number) => `hsl(${h}, 55%, 28%)`;
-const folderBodyLight = (h: number) => `hsl(${h}, 58%, 54%)`;
-const folderBodyDark  = (h: number) => `hsl(${h}, 52%, 40%)`;
-const folderTabLight  = (h: number) => `hsl(${h}, 62%, 64%)`;
-const folderLip       = (h: number) => `hsl(${h}, 50%, 32%)`;
+const hue        = (h: number) => `hsl(${h}, 80%, 60%)`;
+const hueD       = (h: number) => `hsl(${h}, 55%, 28%)`;
+// Folder colours — warm, saturated, paper-like
+const fTab       = (h: number) => `hsl(${h}, 72%, 62%)`;   // tab top highlight
+const fTabBase   = (h: number) => `hsl(${h}, 65%, 52%)`;   // tab body
+const fBody1     = (h: number) => `hsl(${h}, 62%, 56%)`;   // body top
+const fBody2     = (h: number) => `hsl(${h}, 55%, 44%)`;   // body bottom
+const fEdge      = (h: number) => `hsl(${h}, 50%, 36%)`;   // bottom fold edge
+const fShadowC   = (h: number) => `hsl(${h}, 60%, 20%)`;   // drop shadow colour
 
 function toFilename(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '.ts';
@@ -88,36 +96,41 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
   const gutterBg = hueD(project.hueA);
   const filename = toFilename(project.name);
 
-  const tabBg  = `linear-gradient(to bottom, ${folderTabLight(project.hueA)}, ${folderBodyLight(project.hueA)})`;
-  const bodyBg = `linear-gradient(175deg, ${folderBodyLight(project.hueA)} 0%, ${folderBodyDark(project.hueA)} 100%)`;
-  const lipBg  = folderLip(project.hueA);
+  const h      = project.hueA;
+  const tabBg  = `linear-gradient(to bottom, ${fTab(h)}, ${fTabBase(h)})`;
+  // Body: paper-like layered gradient with subtle diagonal sheen
+  const bodyBg = `
+    linear-gradient(175deg,
+      rgba(255,255,255,0.10) 0%,
+      rgba(255,255,255,0.00) 40%,
+      rgba(0,0,0,0.08) 100%
+    ),
+    linear-gradient(to bottom, ${fBody1(h)}, ${fBody2(h)})
+  `;
+  const lipBg  = fEdge(h);
+  const shadowC = fShadowC(h);
 
-  // ── Measure card height so folder body is the exact right size ───────────
-  const cardRef     = useRef<HTMLDivElement>(null);
-  const wrapperRef  = useRef<HTMLDivElement>(null);
-  const [cardH, setCardH] = useState(240); // reasonable SSR fallback
+  // ── Measure card height ──────────────────────────────────────────────────
+  const cardRef    = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [cardH, setCardH] = useState(0);
   const hasAnimated = useRef(false);
   const controls    = useAnimation();
 
-  // Step 1: measure the card as soon as it renders / resizes
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
     const ro = new ResizeObserver(entries => {
       const h = entries[0]?.contentRect.height;
-      if (h) setCardH(h);
+      if (h && h > 0) setCardH(h);
     });
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Step 2: start card at the measured y offset whenever cardH is known
+  // Once cardH is known, attach IntersectionObserver and fire the spring
   useEffect(() => {
-    controls.set({ y: cardH });
-  }, [cardH, controls]);
-
-  // Step 3: IntersectionObserver fires AFTER cardH is set — triggers the spring
-  useEffect(() => {
+    if (cardH === 0) return;
     const el = wrapperRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -125,8 +138,8 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         if (entry.isIntersecting && !hasAnimated.current) {
           hasAnimated.current = true;
           controls.start({
-            y: 0,
-            transition: { type: 'spring', bounce: 0.3, duration: 1.0 },
+            y: -cardH,
+            transition: { type: 'spring', bounce: 0.28, duration: 1.0 },
           });
         }
       },
@@ -134,7 +147,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [controls]);
+  }, [cardH, controls]);
 
   // Word-wrap description → JSDoc comment lines ≤50 chars
   const commentLines: string[] = [];
@@ -146,8 +159,11 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
   if (buf) commentLines.push(buf.trim());
   const importStart = commentLines.length + 5;
 
-  // Outer wrapper height = sky space (cardH) + tab + folder body (cardH) + lip
-  const wrapperH = cardH + TAB_H + cardH + LIP_H;
+  // wrapperH: sky gap (cardH) + tab + folder body (cardH) + lip
+  // Before measure, collapse to just the folder shell so there's no giant gap.
+  const wrapperH = cardH > 0
+    ? cardH + TAB_H + cardH + LIP_H
+    : TAB_H + LIP_H + 40; // minimal pre-measure height
 
   return (
     <div
@@ -157,65 +173,86 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         position: 'relative',
         height: wrapperH,
         marginBottom: 40,
+        // NO overflow:hidden — the sky gap above the folder must stay visible
       }}
     >
-      {/* ── Folder tab ─────────────────────────────────────────────────────── */}
+      {/* ── Folder tab — left-aligned notch, protrudes above the body ─────────── */}
       <div style={{
         position: 'absolute',
-        top: cardH,
-        left: 14,
+        top: cardH,          // sits flush on top of the body
+        left: 0,
+        width: 160,          // narrower than full width — real folder tab shape
         height: TAB_H,
-        paddingLeft: 10, paddingRight: 14,
         background: tabBg,
-        borderRadius: '7px 7px 0 0',
-        display: 'flex', alignItems: 'center', gap: 5,
-        boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.2)',
-        whiteSpace: 'nowrap',
-        zIndex: 2,
+        borderRadius: '8px 12px 0 0',
+        display: 'flex', alignItems: 'center', gap: 7,
+        paddingLeft: 12,
+        // Inner highlight on top/left edges — the lit face of the tab
+        boxShadow: [
+          'inset 0 2px 0 rgba(255,255,255,0.35)',
+          'inset 2px 0 0 rgba(255,255,255,0.15)',
+        ].join(', '),
+        zIndex: 5,
       }}>
-        <svg width="9" height="11" viewBox="0 0 10 12" fill="none" aria-hidden="true">
-          <path d="M1 0h5.5L10 3.5V11a1 1 0 01-1 1H1a1 1 0 01-1-1V1a1 1 0 011-1z" fill="rgba(0,0,0,0.2)" />
-          <path d="M5.5 0L10 3.5H6.5A1 1 0 015.5 2.5V0z" fill="rgba(0,0,0,0.15)" />
+        {/* File icon — two-tone page with folded corner */}
+        <svg width="10" height="12" viewBox="0 0 10 12" fill="none" aria-hidden="true">
+          <path d="M1 0h5l3 3v8a1 1 0 01-1 1H1a1 1 0 01-1-1V1a1 1 0 011-1z" fill="rgba(0,0,0,0.22)" />
+          <path d="M6 0l3 3H7a1 1 0 01-1-1V0z" fill="rgba(0,0,0,0.18)" />
+          <line x1="2" y1="5" x2="7.5" y2="5" stroke="rgba(255,255,255,0.35)" strokeWidth="0.8" />
+          <line x1="2" y1="7" x2="7.5" y2="7" stroke="rgba(255,255,255,0.25)" strokeWidth="0.8" />
+          <line x1="2" y1="9" x2="5.5" y2="9" stroke="rgba(255,255,255,0.2)" strokeWidth="0.8" />
         </svg>
         <span style={{
           fontFamily: 'monospace', fontSize: 10,
-          color: 'rgba(0,0,0,0.52)', letterSpacing: '0.02em', fontWeight: 600,
+          color: 'rgba(0,0,0,0.60)', letterSpacing: '0.03em', fontWeight: 700,
+          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+          maxWidth: 110,
         }}>{filename}</span>
       </div>
 
-      {/* ── Folder body — overflow:hidden fully contains the card ──────────── */}
+      {/* ── Folder body — full-width paper slab, sits ON TOP of card (z:4) ─────── */}
       <div style={{
         position: 'absolute',
         top: cardH + TAB_H,
         left: 0, right: 0,
-        height: cardH,
+        height: cardH > 0 ? cardH : 40,
         background: bodyBg,
-        borderRadius: '0 6px 0 0',
-        overflow: 'hidden',
-        boxShadow: 'inset 0 3px 0 rgba(255,255,255,0.18), 0 2px 8px rgba(0,0,0,0.25)',
-        zIndex: 1,
+        borderRadius: '0 6px 0 0',  // right-top radius — tab is only on the left
+        // Top highlight (lit edge) + ambient drop shadow
+        boxShadow: [
+          'inset 0 2px 0 rgba(255,255,255,0.22)',
+          'inset -2px 0 0 rgba(0,0,0,0.08)',
+          `0 8px 32px ${shadowC}80`,
+        ].join(', '),
+        zIndex: 4,
       }} />
 
-      {/* ── Folder lip — flush below body ──────────────────────────────────── */}
+      {/* ── Folder bottom fold — darker strip, the folded paper edge ─────────────── */}
       <div style={{
         position: 'absolute',
-        top: cardH + TAB_H + cardH,
-        left: 4, right: 4,
+        top: cardH > 0 ? cardH + TAB_H + cardH : TAB_H + 40,
+        left: 0, right: 0,
         height: LIP_H,
         background: lipBg,
-        borderRadius: '0 0 6px 6px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
-        zIndex: 1,
+        borderRadius: '0 0 10px 10px',
+        boxShadow: [
+          `0 6px 24px ${shadowC}`,
+          `0 12px 40px ${shadowC}60`,
+        ].join(', '),
+        zIndex: 5,
       }} />
 
-      {/* ── Card — springs out above folder on scroll ──────────────────────── */}
+      {/* ── Card — z:3, hidden under folder body (z:4) until y < 0 ──────────── */}
+      {/* At y=0 the card is flush with the folder body top — covered by it.     */}
+      {/* At y=-cardH the card has fully exited into the sky gap above.          */}
       <motion.div
         ref={cardRef}
         animate={controls}
+        initial={{ y: 0 }}
         style={{
           position: 'absolute',
-          top: cardH,
-          left: 0, right: 0,
+          top: cardH + TAB_H,
+          left: 16, right: 16,
           borderRadius: 10,
           overflow: 'hidden',
           background: '#0d1117',

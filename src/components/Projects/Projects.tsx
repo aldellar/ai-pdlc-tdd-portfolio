@@ -39,8 +39,8 @@ export function Projects() {
       <div
         style={{
           margin: '0 auto',
-          maxWidth: 560,
-          padding: '60px 24px 120px',
+          maxWidth: 700,
+          padding: '60px 32px 120px',
           width: '100%',
         }}
       >
