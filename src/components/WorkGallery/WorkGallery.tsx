@@ -15,9 +15,8 @@
  * centred in the viewport, derived from scroll progress thresholds.
  */
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
-import { useState } from 'react';
 import { workHistory } from '@/lib/data';
 import { TerminalPanel } from './TerminalPanel';
 
@@ -42,14 +41,27 @@ export function WorkGallery() {
   // Progress bar scale
   const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
-  // Track which panel index is active (centred)
-  const [activeIndex, setActiveIndex] = useState(0);
+  // Track which panel index is active (centred).
+  // -1 means nothing is active yet — prevents panel 0 from auto-typing before
+  // the gallery has scrolled into view.
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
     // Each panel occupies an equal 1/N share of progress
     const idx = Math.min(Math.round(latest * (N - 1)), N - 1);
     setActiveIndex(idx);
   });
+
+  // Handle the case where the page loads with the gallery already in view
+  // (e.g. anchor navigation). useMotionValueEvent only fires on changes,
+  // so we read the initial value once on mount.
+  useEffect(() => {
+    const initial = scrollYProgress.get();
+    if (initial > 0) {
+      setActiveIndex(Math.min(Math.round(initial * (N - 1)), N - 1));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <section

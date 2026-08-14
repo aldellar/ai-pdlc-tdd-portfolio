@@ -119,10 +119,7 @@ export function TerminalPanel({ entry, index, isActive }: TerminalPanelProps) {
       </div>
 
       {/* ── RIGHT: terminal window ──────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={isActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-        transition={{ duration: 0.45, ease: 'easeOut' }}
+      <div
         className="relative z-10 w-full max-w-2xl rounded-xl overflow-hidden
                    border border-white/10 bg-[#0d0d1a] shadow-2xl"
       >
@@ -225,7 +222,7 @@ export function TerminalPanel({ entry, index, isActive }: TerminalPanelProps) {
             </p>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
