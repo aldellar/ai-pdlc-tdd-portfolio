@@ -146,46 +146,55 @@ export const projects: Project[] = [
   {
     name: 'TechPath AI',
     description:
-      'AI-powered learning path generator that produces personalised roadmaps for developers. Takes a target role and skill level as input and returns a structured, resource-linked curriculum.',
-    tech: ['Python', 'OpenAI', 'React', 'TypeScript', 'Node.js'],
-    url: 'https://github.com/aldellar',
+      'iOS app that helps CS students and new grads build a personalised weekly routine and interview prep plan using OpenAI — all data stays 100% local on device. No accounts, no cloud, no data storage.',
+    tech: ['Swift', 'SwiftUI', 'Node.js', 'Express', 'OpenAI'],
+    url: 'https://github.com/aldellar/TechPath-AI',
     hueA: 160,
     hueB: 200,
   },
   {
     name: 'Distributed Key-Value Store',
     description:
-      'A distributed key-value store built from scratch implementing consistent hashing, replication, and fault tolerance. Supports concurrent reads and writes across multiple nodes.',
-    tech: ['Go', 'Docker', 'Kubernetes'],
-    url: 'https://github.com/aldellar',
+      'Primary/Backup replication model with RESTful HTTP endpoints for storing, retrieving, and deleting key-value pairs. Deployed across 3 Docker containers on AWS EC2 with automated CI/CD via GitHub Actions.',
+    tech: ['Node.js', 'Express', 'Docker', 'AWS EC2', 'GitHub Actions'],
+    url: 'https://github.com/aldellar/Distributed-Key-Value-Store',
     hueA: 30,
     hueB: 60,
   },
   {
     name: 'CollabSpace',
     description:
-      'Real-time collaborative workspace application with live cursors, shared documents, and presence indicators. Built with operational transforms for conflict-free concurrent editing.',
-    tech: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'WebSockets'],
-    url: 'https://github.com/aldellar',
+      'Collaborative workspace management app with account auth, workspace creation, and user role management. JWT-based authentication, OpenAPI/Swagger docs, and a responsive Material UI frontend.',
+    tech: ['React', 'Material UI', 'Node.js', 'Express', 'PostgreSQL'],
+    url: 'https://github.com/aldellar/CollabSpace',
     hueA: 280,
     hueB: 320,
   },
   {
     name: 'Cryptor',
     description:
-      'A command-line encryption toolkit implementing AES-256, RSA, and ChaCha20 ciphers with a clean CLI interface. Supports file and stream encryption with key management utilities.',
-    tech: ['Python', 'Cryptography', 'CLI'],
-    url: 'https://github.com/aldellar',
+      'Assembly-language cryptography tool implementing encryption and decryption algorithms via direct hardware-level operations. Optimized low-level codebase with compiled object files for maximum efficiency.',
+    tech: ['Assembly', 'x86', 'Cryptography'],
+    url: 'https://github.com/aldellar/Cryptor',
     hueA: 340,
     hueB: 20,
   },
   {
     name: 'Workout Logger',
     description:
-      'Mobile-first workout tracking app with exercise history, PR tracking, and progressive overload suggestions. Syncs across devices with offline-first architecture.',
-    tech: ['Swift', 'SwiftUI', 'CoreData'],
-    url: 'https://github.com/aldellar',
+      'Workout tracking web app for logging exercises, tracking history, and monitoring progressive overload. Built with a React frontend and a minimal Node.js backend.',
+    tech: ['React', 'JavaScript', 'Node.js'],
+    url: 'https://github.com/aldellar/Workout-Logger',
     hueA: 100,
     hueB: 140,
+  },
+  {
+    name: 'Slug Dining',
+    description:
+      'C-based simulation of the Dining Philosophers problem using POSIX threads, semaphores, and mutexes. Implements custom resource management algorithms to solve deadlock and concurrency issues. Runs in a Docker container.',
+    tech: ['C', 'POSIX Threads', 'Docker', 'Makefile'],
+    url: 'https://github.com/aldellar/Slug-Dining',
+    hueA: 190,
+    hueB: 230,
   },
 ];
