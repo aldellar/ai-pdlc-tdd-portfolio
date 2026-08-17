@@ -10,7 +10,6 @@
  */
 
 import { identity, techIcons } from '@/lib/data';
-import { getPhotos } from '@/lib/getPhotos';
 import { ScrambleText } from './ScrambleText';
 import { TechTicker } from './TechTicker';
 import { PhotoTicker } from './PhotoTicker';
@@ -20,10 +19,10 @@ import { SumiBackground } from './SumiBackground';
 interface HeroProps {
   /** Pass true once the loading screen has exited to start ScrambleText */
   scrambleTrigger?: boolean;
+  photos?: string[];
 }
 
-export function Hero({ scrambleTrigger = true }: HeroProps) {
-  const heroPhotos = getPhotos();
+export function Hero({ scrambleTrigger = true, photos = [] }: HeroProps) {
   return (
     <section
       data-testid="hero-section"
@@ -76,7 +75,7 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
       {/* 3 — 3-column vertical photo strip */}
       <div className="relative z-10">
         <PhotoTicker
-          photos={heroPhotos}
+          photos={photos}
           className="h-[55vh] px-4 py-2"
         />
       </div>
