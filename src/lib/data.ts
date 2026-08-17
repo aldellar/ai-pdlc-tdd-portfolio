@@ -44,57 +44,6 @@ export const techIcons: TechIcon[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Hero photos — used by PhotoTicker (3-column vertical scroll)
-// Each column gets a slice of this list; columns loop independently.
-// ---------------------------------------------------------------------------
-export const heroPhotos: string[] = [
-  '/photos/079AD341-AD8E-4F75-A0C5-941BF2C9C689_1_105_c.jpeg',
-  '/photos/0C78B480-D422-4C83-8579-CC69076B5EB5_1_105_c.jpeg',
-  '/photos/13809550-AAD7-4455-9101-BF6CD8747FED_1_105_c.jpeg',
-  '/photos/2690BEFE-CD0E-4A15-B6BB-8FA8B7B27A17_1_105_c.jpeg',
-  '/photos/2D3A723F-7C4B-4B84-9D82-BC49B656E36F_1_105_c.jpeg',
-  '/photos/311389DA-F0B8-4382-89D3-0728C146A9A1_4_5005_c.jpeg',
-  '/photos/380A65CE-24AF-4F3B-AA90-7BDAF08C5FA6_4_5005_c.jpeg',
-  '/photos/3885179C-BF0E-4865-95B4-95F563DA3B28_4_5005_c.jpeg',
-  '/photos/41DE6A97-1173-4FCA-8F7C-201C777F0629_1_105_c.jpeg',
-  '/photos/452D91B5-77F3-4B43-B20E-27DE45D3C70F_4_5005_c.jpeg',
-  '/photos/4702125F-1548-4112-87CA-484F14DC0426_1_105_c.jpeg',
-  '/photos/5A043A5E-918E-484C-9ED9-DEDB5E662CB5_1_105_c.jpeg',
-  '/photos/5D385E90-D6D4-4A20-A7FE-528181A6052F_4_5005_c.jpeg',
-  '/photos/68CC488B-55DA-4966-9681-DF0B0F165D0D_1_105_c.jpeg',
-  '/photos/6C5C687F-107C-4819-9803-848B01DEF971_1_105_c.jpeg',
-  '/photos/6C82098E-BFAE-42EB-BE5C-3B50AFC89DBA_1_105_c-compressed.png',
-  '/photos/6DA991BB-A3C3-4C54-87F8-1DDC5487C0E8_1_105_c.jpeg',
-  '/photos/707421C7-8C91-4552-A56D-03B0296484BA_4_5005_c.jpeg',
-  '/photos/75DE1A3F-8083-4D1D-B461-BFFFF1D5894D_1_105_c.jpeg',
-  '/photos/7F88281F-8762-4BB6-A8B5-84B3F7D6E011_1_105_c.jpeg',
-  '/photos/825602F5-0FFF-4077-9E0B-D73BBB555583_4_5005_c.jpeg',
-  '/photos/8684F16C-78AD-48CE-969D-2E0790304A9C_1_105_c.jpeg',
-  '/photos/8B11C894-3B34-433D-AAB0-2D2BEAE4024B_1_105_c.jpeg',
-  '/photos/8E3465ED-FD48-4A40-9419-89F43BBAB591_4_5005_c.jpeg',
-  '/photos/99EE2C13-F53D-448A-8D7E-F6583360FB98_1_105_c.jpeg',
-  '/photos/A798FC14-3FE0-43A1-BC27-8C794DAF6708_4_5005_c.jpeg',
-  '/photos/A9F7D3D3-EE74-4BC6-AD14-5AA3CCFB7906_1_102_o.jpeg',
-  '/photos/ABBA61D7-30FA-45C4-8D21-7A9C4FDD45C9_1_105_c.jpeg',
-  '/photos/AF82E6AB-B6DB-4B85-AA20-BB66A10555AC_4_5005_c.jpeg',
-  '/photos/B0B1DE38-BA58-4A5C-8DD0-EA0B873F9BA2_4_5005_c.jpeg',
-  '/photos/B2EE07A5-18A1-408C-AA74-BD1F9C46B832_1_105_c.jpeg',
-  '/photos/B9BCE260-7819-4341-8C9A-7720224DED90_1_105_c.jpeg',
-  '/photos/C31906E5-C510-482B-9B5F-CFB52B3F73AF_1_105_c.jpeg',
-  '/photos/C3DB959F-24C4-4F2C-8E66-F77DBA14AC89_1_105_c.jpeg',
-  '/photos/C6BADAB3-790F-460C-B6F1-3CABF6AF8158_4_5005_c.jpeg',
-  '/photos/CC27FCBE-CD29-4CFD-B1C9-06F9A381F733_4_5005_c.jpeg',
-  '/photos/D3759362-30B9-4852-9370-3A7C5B17C572_1_105_c.jpeg',
-  '/photos/E2145E6E-D35D-41F7-B47C-41031181EA63_1_105_c.jpeg',
-  '/photos/E3BC9DB7-40A9-4E9A-9845-438AB898E97D_4_5005_c.jpeg',
-  '/photos/E511D1FE-1B16-431F-90BB-BC0341330CCB_4_5005_c.jpeg',
-  '/photos/E559877C-A548-4984-871C-05317B885174_1_105_c.jpeg',
-  '/photos/F488A7D2-454A-4E09-AD2D-A5830390FD13_1_105_c.jpeg',
-  '/photos/F78E96F4-2C22-43A7-8F4E-85A247CA8842_1_105_c.jpeg',
-  '/photos/F996B0C4-9044-4989-8B7F-532A34D60E87_1_105_c.jpeg',
-];
-
-// ---------------------------------------------------------------------------
 // Work history — used by S2 About / WorkHistory section
 // ---------------------------------------------------------------------------
 export const workHistory: WorkEntry[] = [

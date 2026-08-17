@@ -54,12 +54,6 @@ export function TerminalPanel({ entry, index, isActive }: TerminalPanelProps) {
   // Delays (ms from isActive becoming true)
   const d0 = 200;                                        // CMD_WHOAMI starts
   const d1 = d0 + charMs(CMD_WHOAMI)   + GAP;           // whoami answer
-  const d2 = d1 + charMs('> andrew.dellaringa') + GAP;  // CMD_CAT
-  const d3 = d2 + charMs(CMD_CAT)      + GAP;           // role line
-  const d4 = d3 + charMs(ROLE_LINE)    + GAP / 2;       // meta line
-  const d5 = d4 + charMs(META_LINE)    + GAP;           // CMD_LS
-  const d6 = d5 + charMs(CMD_LS)       + GAP;           // bullets stagger
-
   const BULLET_STAGGER = 220; // ms between each bullet appearing
 
   return (

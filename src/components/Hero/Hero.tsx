@@ -9,7 +9,8 @@
  *   5. 3×3 info grid (work, education, experience, email, LinkedIn, Instagram)
  */
 
-import { identity, techIcons, heroPhotos } from '@/lib/data';
+import { identity, techIcons } from '@/lib/data';
+import { getPhotos } from '@/lib/getPhotos';
 import { ScrambleText } from './ScrambleText';
 import { TechTicker } from './TechTicker';
 import { PhotoTicker } from './PhotoTicker';
@@ -22,6 +23,7 @@ interface HeroProps {
 }
 
 export function Hero({ scrambleTrigger = true }: HeroProps) {
+  const heroPhotos = getPhotos();
   return (
     <section
       data-testid="hero-section"

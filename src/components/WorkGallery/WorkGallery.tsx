@@ -58,6 +58,7 @@ export function WorkGallery() {
   useEffect(() => {
     const initial = scrollYProgress.get();
     if (initial > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveIndex(Math.min(Math.round(initial * (N - 1)), N - 1));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

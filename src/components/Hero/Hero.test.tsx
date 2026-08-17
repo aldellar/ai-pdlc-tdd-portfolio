@@ -8,12 +8,24 @@
  */
 
 import { render, screen, within } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Hero } from './Hero';
 import { ScrambleText } from './ScrambleText';
 import { TechTicker } from './TechTicker';
 import { PhotoTicker } from './PhotoTicker';
-import { identity, techIcons, heroPhotos } from '@/lib/data';
+import { identity, techIcons } from '@/lib/data';
+
+// Mock getPhotos so the Hero Server Component works in jsdom without fs
+const MOCK_PHOTOS = [
+  '/photos/photo-a.jpeg',
+  '/photos/photo-b.jpeg',
+  '/photos/photo-c.jpeg',
+  '/photos/photo-d.jpeg',
+];
+
+vi.mock('@/lib/getPhotos', () => ({
+  getPhotos: () => MOCK_PHOTOS,
+}));
 
 // ---------------------------------------------------------------------------
 // A. Happy Path
@@ -82,12 +94,12 @@ describe('S1 — AC4/8: tech ticker', () => {
 
 describe('S1 — AC6/7: photo ticker', () => {
   it('photo-strip-renders-three-columns — renders exactly 3 column containers', () => {
-    render(<PhotoTicker photos={heroPhotos} />);
+    render(<PhotoTicker photos={MOCK_PHOTOS} />);
     expect(screen.getAllByTestId('photo-column')).toHaveLength(3);
   });
 
   it('photo-columns-each-have-photos — each column contains at least one image', () => {
-    render(<PhotoTicker photos={heroPhotos} />);
+    render(<PhotoTicker photos={MOCK_PHOTOS} />);
     const columns = screen.getAllByTestId('photo-column');
     columns.forEach((col) => {
       const imgs = within(col).getAllByRole('img');
@@ -96,7 +108,7 @@ describe('S1 — AC6/7: photo ticker', () => {
   });
 
   it('photos-have-alt-text — every image has a non-empty alt attribute', () => {
-    render(<PhotoTicker photos={heroPhotos} />);
+    render(<PhotoTicker photos={MOCK_PHOTOS} />);
     const imgs = screen.getAllByRole('img');
     imgs.forEach((img) => {
       expect(img.getAttribute('alt')).toBeTruthy();
@@ -124,11 +136,11 @@ describe('S1 — integration: data sourcing', () => {
     expect(icons.length).toBeGreaterThanOrEqual(techIcons.length);
   });
 
-  it('hero-reads-photos-from-data — img src attributes match heroPhotos entries', () => {
+  it('hero-reads-photos-from-data — img src attributes match getPhotos() entries', () => {
     render(<Hero />);
     const imgs = screen.getAllByRole('img');
     const srcs = imgs.map((img) => img.getAttribute('src') ?? '');
-    heroPhotos.forEach((photo) => {
+    MOCK_PHOTOS.forEach((photo) => {
       expect(srcs.some((src) => src.includes(photo.replace('/photos/', '')))).toBe(true);
     });
   });
