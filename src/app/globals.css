@@ -47,23 +47,23 @@ html.custom-cursor * {
 
 @keyframes scroll-slow {
   from { transform: translateY(0); }
-  to   { transform: translateY(-50%); }
+  to   { transform: translateY(-33.333%); }
 }
 
 @keyframes scroll-medium {
   from { transform: translateY(0); }
-  to   { transform: translateY(-50%); }
+  to   { transform: translateY(-33.333%); }
 }
 
 @keyframes scroll-fast {
   from { transform: translateY(0); }
-  to   { transform: translateY(-50%); }
+  to   { transform: translateY(-33.333%); }
 }
 
 @theme inline {
   --animate-ticker:         ticker 20s linear infinite;
   --animate-ticker-reverse: ticker-reverse 20s linear infinite;
-  --animate-scroll-slow:   scroll-slow 18s linear infinite;
-  --animate-scroll-medium: scroll-medium 12s linear infinite;
-  --animate-scroll-fast:   scroll-fast 8s linear infinite;
+  --animate-scroll-slow:   scroll-slow 90s linear infinite;
+  --animate-scroll-medium: scroll-medium 70s linear infinite;
+  --animate-scroll-fast:   scroll-fast 50s linear infinite;
 }

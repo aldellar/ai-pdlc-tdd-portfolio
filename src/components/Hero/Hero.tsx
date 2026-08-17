@@ -75,7 +75,7 @@ export function Hero({ scrambleTrigger = true }: HeroProps) {
       <div className="relative z-10">
         <PhotoTicker
           photos={heroPhotos}
-          className="h-[38vh] px-4 py-2"
+          className="h-[55vh] px-4 py-2"
         />
       </div>
 
